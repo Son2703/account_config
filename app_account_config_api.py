@@ -1,11 +1,3 @@
-import os
-os.environ["HOST"] = "https://api-test1.mobio.vn/"
-os.environ["ADMIN_HOST"]="https://api-test1.mobio.vn"
-os.environ["APPLICATION_DATA_DIR"]="/home/toan/Desktop/Redis/AccountConfig"
-os.environ["APPLICATION_LOGS_DIR"]="/home/toan/Desktop/Redis/AccountConfig"
-os.environ["ACCOUNT_CONFIG_HOME"]="/home/toan/Desktop/Redis/AccountConfig"
-
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """ Company: MobioVN
@@ -27,4 +19,4 @@ CORS(app)
 @apiSuccess {String} lastname  Lastname of the User.
 """
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, debug=False)
+    app.run(host='0.0.0.0', port=8000, debug=True)

@@ -1,11 +1,9 @@
-FROM BE_BASE_COMPILE_IMAGE as compile-image
+FROM python:3.8
 
 WORKDIR /home/mobio/projects/AccountConfig
 ADD . /home/mobio/projects/AccountConfig
 
 RUN pip3.8 install -r requirements.txt
-
-FROM BE_BASE_RUN_IMAGE as run-image
 
 ENV LC_ALL=en_US.UTF-8 \
    ACCOUNT_CONFIG_HOME=/home/mobio/projects/AccountConfig \
@@ -21,11 +19,8 @@ RUN mkdir -p $data_dir $log_dir $monitor_log_dir
 
 WORKDIR $ACCOUNT_CONFIG_HOME
 
-COPY --from=compile-image $ACCOUNT_CONFIG_HOME $ACCOUNT_CONFIG_HOME
-
-COPY --from=compile-image /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
-COPY --from=compile-image /usr/local/bin/uwsgi /usr/local/bin/uwsgi
-
 RUN chmod +x *.sh
 
-CMD tail -f /dev/null
+EXPOSE 8000
+
+CMD ["python3", "app_account_config_api.py"]
