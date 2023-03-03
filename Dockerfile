@@ -1,7 +1,8 @@
 FROM python:3.8
 
 WORKDIR /home/mobio/projects/AccountConfig
-ADD . /home/mobio/projects/AccountConfig
+
+COPY requirements.txt /home/mobio/projects/AccountConfig
 
 RUN pip3.8 install -r requirements.txt
 
@@ -17,10 +18,10 @@ ENV data_dir=$APPLICATION_DATA_DIR$ACCOUNT_CONFIG_FOLDER_NAME \
 
 RUN mkdir -p $data_dir $log_dir $monitor_log_dir
 
-WORKDIR $ACCOUNT_CONFIG_HOME
+ADD . /home/mobio/projects/AccountConfig
 
 RUN chmod +x *.sh
 
-EXPOSE 8000
-
 CMD ["python3", "app_account_config_api.py"]
+
+EXPOSE 8000
