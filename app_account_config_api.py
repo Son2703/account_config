@@ -5,7 +5,7 @@
 """
 from flask_cors import CORS
 from src.apis.v1_0 import *
-
+from src.models.merchant_schemas import MerchantSchema
 
 CORS(app)
 """
