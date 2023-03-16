@@ -4,4 +4,8 @@ python-dotenv==1.0.0
 mobio-admin-sdk
 python-dateutil
 m-utilities
+Flask~=2.2.3
+marshmallow~=3.19.0
+Jinja2~=3.1.2
+pymongo~=4.3.3
 kafka-python
