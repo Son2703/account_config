@@ -1,4 +1,7 @@
 mobio-base-sdk==1.0.12
+pymongo==4.3.3
+python-dotenv==1.0.0
 mobio-admin-sdk
 python-dateutil
 m-utilities
+kafka-python
