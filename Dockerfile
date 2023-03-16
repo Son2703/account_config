@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.8 as base
 
 WORKDIR /home/mobio/projects/AccountConfig
 
@@ -22,6 +22,6 @@ ADD . /home/mobio/projects/AccountConfig
 
 RUN chmod +x *.sh
 
-CMD ["python3", "app_account_config_api.py"]
+CMD ["python3", "app_account_config_api.py", "tail -f /dev/null"]
 
 EXPOSE 8000
