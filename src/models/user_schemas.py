@@ -9,17 +9,6 @@ class UserBaseSchema(Schema):
     username = fields.Str(required=True)
     password = fields.Str(required=True)
 
-# class UserSchema(UserBaseSchema):
-#     _id = fields.Str()
-#     id_merchant = fields.Str(required=True)
-#     last_login = fields.DateTime(default=datetime.datetime.utcnow())
-#     login_fail_number = fields.Number(default=0)
-#     status = fields.Boolean(default=True)
-#     created_by = fields.Str()
-#     updated_by = fields.Str()
-#     created_at = fields.DateTime(default=datetime.datetime.utcnow())
-#     updated_at = fields.DateTime(default=datetime.datetime.utcnow())
-
 
 class ChangePasswordSchema(UserBaseSchema):
     new_password = fields.Str(required=True)
