@@ -1,3 +1,0 @@
-AccountConfig
-===============
-config account
