@@ -2,7 +2,7 @@ import datetime
 
 from marshmallow import Schema, fields
 
-from src.models import common_fields
+from src.models.schemas import common_fields
 
 
 class UserBaseSchema(Schema):
