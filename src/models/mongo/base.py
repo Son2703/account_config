@@ -30,8 +30,8 @@ class Base:
             payload.update({
                 CommonKey.CREATE_BY: creator,
                 CommonKey.UPDATE_BY: None,
-                CommonKey.CREATE_AT: None,
-                CommonKey.UPDATE_AT: timestamp_utc()
+                CommonKey.CREATE_AT: timestamp_utc(),
+                CommonKey.UPDATE_AT: None
             })
         return self.col.insert_one(payload)
     
