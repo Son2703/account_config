@@ -1,6 +1,7 @@
 from datetime import datetime
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
+from src.helps.func import get_json_from_db
 
 class Base:
     def __init__(self, col = None) -> None:
@@ -33,7 +34,13 @@ class Base:
                 CommonKey.CREATE_AT: timestamp_utc(),
                 CommonKey.UPDATE_AT: None
             })
-        return self.col.insert_one(payload)
+
+        result = self.col.insert_one(payload)
+        # return result
+        return get_json_from_db({
+            # "id": result.inserted_id,
+            **dict(payload)
+        })
     
     def create_many(self, payload, creator = None):
         pass

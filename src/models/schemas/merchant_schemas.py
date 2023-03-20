@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from marshmallow import Schema, fields
+from configs.configs import CONFIG_ACCOUNT_DB as db
 
 from src.models.schemas import common_fields
 

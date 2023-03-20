@@ -3,5 +3,5 @@ import pytz
 from datetime import datetime
 
 def timestamp_utc():
-    return datetime.now(tz=pytz.timezone(TimeConfig.UTC_ZONE)).timestamp()
+    return datetime.now(tz=pytz.timezone(TimeConfig.UTC_ZONE.value)).timestamp()
 
