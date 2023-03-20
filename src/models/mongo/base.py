@@ -1,5 +1,6 @@
 from datetime import datetime
 from src.common.common import CommonKey
+from src.common.time import timestamp_utc
 
 class Base:
     def __init__(self, col = None) -> None:
@@ -20,7 +21,7 @@ class Base:
         if updater:
             payload.update({
                 CommonKey.UPDATE_BY: updater,
-                CommonKey.UPDATE_AT: datetime.timestamp()
+                CommonKey.UPDATE_AT: timestamp_utc()
             })
             return self.col.update_one(query, payload)
 
@@ -30,7 +31,7 @@ class Base:
                 CommonKey.CREATE_BY: creator,
                 CommonKey.UPDATE_BY: None,
                 CommonKey.CREATE_AT: None,
-                CommonKey.UPDATE_AT: datetime.timestamp()
+                CommonKey.UPDATE_AT: timestamp_utc()
             })
         return self.col.insert_one(payload)
     
