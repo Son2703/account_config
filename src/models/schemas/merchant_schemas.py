@@ -10,4 +10,4 @@ class MerchantSchema(Schema):
     name = fields.Str(required=True)
 
     class Meta:
-        fields = ['name'] + common_fields
+        fields = ['name', 'updated_by'] + common_fields
