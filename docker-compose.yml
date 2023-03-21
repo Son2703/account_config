@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   web:
-    container_name: "config-account-v1"
+    container_name: config-account-v1
     build: 
       context: .
       dockerfile: ./Dockerfile
@@ -13,8 +13,8 @@ services:
       - backend
  
   zookeeper:
-    image: "bitnami/zookeeper:latest"
-    container_name: "config-account-zookeeper" 
+    image: bitnami/zookeeper:latest
+    container_name: config-account-zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -23,8 +23,8 @@ services:
       - backend
 
   kafka:
-    image: "bitnami/kafka:latest"
-    container_name: "config-account-kafka"
+    image: bitnami/kafka:latest
+    container_name: config-account-kafka
     ports:
       - "9092:9092"
     environment:
@@ -39,10 +39,13 @@ services:
       - backend
   
   mongo:
-    image: "mongo"
+    image: mongo:latest
     ports:
         - '27017:27017'
-    container_name: "config-account-mongo"
+    container_name: config-account-mongo
+    logging:
+      options:
+          max-size: 1g
     restart: always
     environment:
         - MONGO_INITDB_ROOT_USERNAME=root
@@ -52,8 +55,8 @@ services:
 
     
   redis:
-    image: "redis:latest"
-    container_name: "config-account-redis"
+    image: redis:latest
+    container_name: config-account-redis
     restart: always
     ports:
       - "6379:6379"

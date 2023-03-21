@@ -1,4 +1,3 @@
-from datetime import datetime
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
 
@@ -19,7 +18,7 @@ class Base:
 
     def update_one(self, query, payload, updater = None):
         if updater:
-            payload.update({
+            payload['$set'].update({
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })
@@ -36,7 +35,18 @@ class Base:
         return self.col.insert_one(payload)
     
     def create_many(self, payload, creator = None):
-        pass
-    
+        time_create = timestamp_utc()
+        for item in payload:
+            item.update({
+                CommonKey.CREATE_BY: creator,
+                CommonKey.UPDATE_BY: None,
+                CommonKey.CREATE_AT: time_create,
+                CommonKey.UPDATE_AT: None
+            })
+
+        self.col.insert_many(payload)
+        return payload
+
+
     def delete_all(self):
         return self.col.delete_many({})
