@@ -35,6 +35,10 @@ def create_merchant():
 
 @merchant_url.route('/<id>', methods=['PUT'])
 def update_merchant(id: int):
+
+    if not id or not ObjectId().is_valid(id):
+            return {"code": 400, "message": "invalid ID"}, 400
+
     body = request.get_json()
     print('asdad', body, id, flush=True)
     current_merchant = merchant_table.filter_one(
@@ -67,7 +71,7 @@ def update_merchant(id: int):
 
 @merchant_url.route('/<id>', methods=["GET"])
 def get_one(id: int):
-    if not id:
+    if not id or not ObjectId().is_valid(id):
         return {"code": 400, "message": "invalid ID"}, 400
 
     merchant = merchant_table.filter_one({"_id": ObjectId(id)})
@@ -92,3 +96,18 @@ def get_all():
         return {"code": 404, "message": "Merchant not found!"}, 404
     print("AYYYYYYYY", merchant, flush=True)
     return get_str_from_id(list(merchant))
+
+
+@merchant_url.route('/<id>', methods=["DELETE"])
+def delete(id: int):
+    print("VALIDD0", not ObjectId().is_valid(id), flush=True)
+    if not id or not ObjectId().is_valid(id):
+        return {"code": 400, "message": "invalid ID"}, 400
+
+    merchant = merchant_table.delete({"filter": {"_id": ObjectId(id)}})
+
+    if not merchant:
+        return {"code": 404, "message": "Merchant not found!"}, 404
+
+    print("DELLL", merchant, flush=True)
+    return {"code": 200, "data": {"id": id}}

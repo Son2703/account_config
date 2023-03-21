@@ -1,9 +1,11 @@
 
 
+from datetime import timedelta
 from bson import ObjectId
 from flask import Blueprint, request
 from marshmallow import ValidationError
 from src.auth.auth import create_access_token
+from src.helps.func import get_json_from_db
 from src.models.mongo.user_db import MGUser
 
 from src.models.schemas.user_schemas import SignInSchema
@@ -22,8 +24,6 @@ def login():
         return {"code": 400, "message": err.messages}, 400
     
     val_body["id_merchant"] = ObjectId(val_body["id_merchant"])
-    # val_body["password"] = check_password_hash(val_body["password"])
-    print("AAASSDFSDFSDF", val_body, flush=True)
     current_user = MGUser().filter_one({
         "username": val_body["username"],
         "id_merchant": val_body["id_merchant"],
@@ -38,8 +38,6 @@ def login():
     if not match_password:
         return {"code": 403, "message": "Login fail!"}, 403
 
-    create_access_token(data=current_user, )
-    print("LOGINNNNNNNN", current_user, flush=True)
+    token = create_access_token(data=get_json_from_db(current_user), expires_delta=timedelta(days=1)) 
 
-
-    return "a"
+    return {"code": 200, "data": {"token": token}}

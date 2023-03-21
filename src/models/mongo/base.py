@@ -40,7 +40,6 @@ class Base:
                 CommonKey.UPDATE_AT: None
             })
 
-        # return result
         try:
             self.col.insert_one(payload)
             return dict(payload)
@@ -52,3 +51,7 @@ class Base:
 
     def delete_all(self):
         return self.col.delete_many({})
+
+    def delete(self, payload):
+        print("DELONEE", payload, flush=True)
+        return self.col.find_one_and_delete(**payload)
