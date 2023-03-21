@@ -18,7 +18,8 @@ from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
 from src.models.mongo.merchant_db import MGMerchant
 
-
+rule_table = MGRule()
+user_table = MGUser()
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
 list_pass_user_table = MGListPassUser()
 
