@@ -43,7 +43,7 @@ class Base:
         return self.col.delete_many({})
 
 
-    def count_documents(self, querry):
+    def count_documents(self, querry={}):
         return self.col.count_documents(querry)
     
     

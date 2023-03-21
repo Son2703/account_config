@@ -35,6 +35,19 @@ class RuleControllers(BaseController):
         
         return False
     
+    def validate_get_list_rule(self, page, perpage):
+
+        # try: 
+        #     int(page)
+        
+        #     return response.bad_request("Page phải là số  nguyên")
+        
+        # querry = {"_id": ObjectId(rule_id)}
+        # if RuleModel().count_documents(querry) == 0:
+        #     return response.bad_request("Perpage phải là số nguyên")
+
+        return False
+    
     def validate_get_one_rule(self, rule_id):
 
         if is_ObjectID_valid(rule_id) == False:
@@ -75,7 +88,34 @@ class RuleControllers(BaseController):
         return response.success(data, "Thêm mới rule thành công")
 
     def get_all(self):
-        return {"all": "Rules"}
+        try:
+            page = int(request.args.get("page"))
+            perpage = int(request.args.get("perpage"))
+        except:
+            return response.bad_request("Page, perpage phải là số nguyên")
+
+        validate_get_list_rule = self.validate_get_list_rule(page,perpage)
+        if validate_get_list_rule != False:
+            return validate_get_list_rule
+
+        
+        skip = (page-1) * perpage
+        total_rule = RuleModel().count_documents()
+        total_page = total_rule // perpage + 1
+        
+        if (page == -1):
+            skip = None
+            perpage = None
+
+
+        list_rule = RuleModel().find(skip= skip, limit = perpage)
+        data = {
+            "total_page": total_page,
+            "total_rule": total_rule,
+            "list_rute": json.loads(json_util.dumps(list_rule))
+        }
+        
+        return response.success(data)
     
     def get_one(self,rule_id):
         
@@ -87,6 +127,7 @@ class RuleControllers(BaseController):
         rule = RuleModel().filter_one(querry)
         data = json.loads(json_util.dumps(rule))
 
+        
         return response.success(data)
     
 

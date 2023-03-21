@@ -1,4 +1,4 @@
-from flask import Blueprint    
+from flask import Blueprint, request
 from src.apis import *  
 from src.controllers.rule.rule_controllers import RuleControllers          
 from src.apis.uri import URI                                                                           
@@ -13,7 +13,6 @@ def add_rule():
 @rule_service.route(URI.RULE.RULES, methods = [HTTP.METHOD.GET]) 
 def get_all():
     return RuleControllers().get_all()
-
 @rule_service.route(URI.RULE.RULE_DETAIL, methods = [HTTP.METHOD.GET])
 def get_one(rule_id):
     return RuleControllers().get_one(rule_id)
