@@ -35,18 +35,25 @@ class RuleControllers(BaseController):
         
         return False
     
-    def validate_get_list_rule(self, page, perpage):
-
-        # try: 
-        #     int(page)
+    def validate_get_list_rule(self, params):
         
-        #     return response.bad_request("Page phải là số  nguyên")
-        
-        # querry = {"_id": ObjectId(rule_id)}
-        # if RuleModel().count_documents(querry) == 0:
-        #     return response.bad_request("Perpage phải là số nguyên")
+        if "page" not in params:
+            page = 1
+        else:
+            page = params["page"]
 
-        return False
+        if "perpage" not in params:
+            perpage = 6
+        else:
+            perpage = params["perpage"]
+
+        try: 
+            page = int(page)
+            perpage = int(perpage)
+        except:
+            return response.bad_request("Page, perpage phải là số  nguyên"), None, None
+    
+        return False, page, perpage
     
     def validate_get_one_rule(self, rule_id):
 
@@ -88,13 +95,10 @@ class RuleControllers(BaseController):
         return response.success(data, "Thêm mới rule thành công")
 
     def get_all(self):
-        try:
-            page = int(request.args.get("page"))
-            perpage = int(request.args.get("perpage"))
-        except:
-            return response.bad_request("Page, perpage phải là số nguyên")
 
-        validate_get_list_rule = self.validate_get_list_rule(page,perpage)
+        params = request.args
+        
+        validate_get_list_rule, page, perpage = self.validate_get_list_rule(params)
         if validate_get_list_rule != False:
             return validate_get_list_rule
 
