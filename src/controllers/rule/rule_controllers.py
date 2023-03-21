@@ -110,6 +110,7 @@ class RuleControllers(BaseController):
         if (page == -1):
             skip = None
             perpage = None
+            total_page = 1
 
 
         list_rule = RuleModel().find(skip= skip, limit = perpage)
