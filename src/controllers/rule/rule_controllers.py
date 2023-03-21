@@ -65,6 +65,18 @@ class RuleControllers(BaseController):
             return response.bad_request("Rule không có trong hệ thống")
 
         return False
+    
+    def validate_list_rule(self, list_rule):
+        list_rule_satisfy = []
+        list_rule_not_satisfy = []
+
+        for rule_id in list_rule:
+            if (self.validate_get_one_rule(rule_id) == False):
+                list_rule_satisfy.append(rule_id)
+            else:
+                list_rule_not_satisfy.append(rule_id)
+        
+        return list_rule_satisfy, list_rule_not_satisfy
 
 
     def add_rule(self):
@@ -134,6 +146,46 @@ class RuleControllers(BaseController):
 
         
         return response.success(data)
+    
+    def change_status(self,rule_id, status):
+        validate_get_one_rule = self.validate_get_one_rule(rule_id)
+        if validate_get_one_rule != False:
+            return validate_get_one_rule
+        
+        querry = {"_id": ObjectId(rule_id)}
+        payload = { "status": status }
+        updater = ObjectId() # Fake updater
+
+        RuleModel().update_one(querry,payload,updater)
+
+        rule = RuleModel().filter_one(querry)
+        data = json.loads(json_util.dumps(rule))
+
+        return response.success(data)
+
+    def disable_one(self,rule_id):
+        return self.change_status(rule_id, False)
+    
+    def active_one(self,rule_id):
+        return self.change_status(rule_id, True)
+    
+    def disable_list(self):
+        body_data = request.get_json()
+
+        list_rule_satisfy, list_rule_not_satisfy = self.validate_list_rule(body_data["id_list"])
+
+        for rule_id in list_rule_satisfy:
+            self.change_status(rule_id, False)
+            
+        data = {
+            "list_id_success": list_rule_satisfy,
+            "list_id_fail": list_rule_not_satisfy,
+        }
+
+        return response.success(data)
+    
+
+
     
 
 

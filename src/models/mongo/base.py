@@ -24,8 +24,8 @@ class Base:
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })
-            return self.col.update_one(query, payload)
-
+            return self.col.update_one(query, {"$set": payload})
+        
     def create(self, payload, creator = None):
         if creator:
             payload.update({

@@ -17,10 +17,15 @@ def get_all():
 def get_one(rule_id):
     return RuleControllers().get_one(rule_id)
 
-# @rule_service.route("/rules", methods = [HTTP.METHOD.PATCH])
-# def add_rule():
-#     return build_response_message(RuleControllers().add_rule())
+@rule_service.route(URI.RULE.RULE_DISABLE_ONE_RULE, methods = [HTTP.METHOD.PATCH])
+def disable_one(rule_id):
+    return  RuleControllers().disable_one(rule_id)
 
-# @rule_service.route("/rules", methods = [HTTP.METHOD.PATCH])
-# def add_rule():
-#     return build_response_message(RuleControllers().add_rule())
+@rule_service.route(URI.RULE.RULE_ACTIVE_ONE_RULE, methods = [HTTP.METHOD.PATCH])
+def active_one(rule_id):
+    return  RuleControllers().active_one(rule_id)
+
+
+@rule_service.route(URI.RULE.RULE_DISABLE_LIST_RULE, methods = [HTTP.METHOD.PATCH])
+def disable_list():
+    return  RuleControllers().disable_list()
