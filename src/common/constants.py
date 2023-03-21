@@ -11,3 +11,7 @@ class Rule(Enum):
     REQUIRE_CHANGE_PASS = "require_change_pass"
     UNIQUE_PASS = "unique_pass"
     LOCK_ACCOUNT = "lock_account"
+
+    
+
+LIST_RULE_NAME = [rule.value for rule in list(Rule)]

@@ -2,6 +2,7 @@ from datetime import datetime
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
 
+
 class Base:
     def __init__(self, col = None) -> None:
         self.col = col
@@ -40,3 +41,9 @@ class Base:
     
     def delete_all(self):
         return self.col.delete_many({})
+
+
+    def count_documents(self, querry):
+        return self.col.count_documents(querry)
+    
+    
