@@ -54,3 +54,17 @@ class Base:
 
     def delete(self, payload):
         return self.col.find_one_and_delete(**payload)
+        return self.col.find_one_and_delete(**payload)
+    
+    def create_many(self, payload, creator = None):
+        time_create = timestamp_utc()
+        for item in payload:
+            item.update({
+                CommonKey.CREATE_BY: creator,
+                CommonKey.UPDATE_BY: None,
+                CommonKey.CREATE_AT: time_create,
+                CommonKey.UPDATE_AT: None
+            })
+
+        self.col.insert_many(payload)
+        return payload

@@ -16,10 +16,9 @@ from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
+from src.models.mongo.merchant_db import MGMerchant
 
 
-rule_table = MGRule()
-user_table = MGUser()
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
 list_pass_user_table = MGListPassUser()
 
@@ -35,7 +34,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     user_info.update({"exp": expire})
 
     token = jwt.encode(user_info, SECRET_KEY, algorithm=Authen.ALGORITHM)
-    update_last_login(user_info)
+    # update_last_login(user_info)
     return token
 
 
@@ -48,18 +47,15 @@ def token_required(f):
             token = request.headers['Authorization']
         # return 401 if token is not passed
         if not token:
-            return jsonify({'message': 'Token is missing !!'}), 401
-
-        try:
+            return jsonify({'message' : 'Token is missing !!'}), 401
+  
             # decoding the payload to fetch the stored details
-            data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-            current_user = user_table.filter_one({"_id": data["_id"]})
-        except:
-            return jsonify({
-                'message': 'Token is invalid !!'
-            }), 401
+        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        if not bool(current_user):
+            return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
-        update_last_login(current_user)
+        return  f(data["id_merchant"], *args, **kwargs)
 
         return f(current_user, *args, **kwargs)
     return decorated
