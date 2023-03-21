@@ -5,6 +5,7 @@ from src.common.constants import Rule, Role
 from src.common.common import CommonKey
 from src.apis import HTTP
 from src.common.time import timestamp_utc
+from src.auth.auth import token_required
 
 
 merchant_cf = Blueprint("config", __name__)
@@ -12,22 +13,18 @@ merchant_cf = Blueprint("config", __name__)
 
 
 @merchant_cf.route('/configs', methods=[HTTP.METHOD.POST])
-def create():
+@token_required
+def create(id_merchant):
     try:
-        # id_merchant = get_id_merchant_by_token(request)
-        # merchant = MGmerchant.filter_one({"_id": ObjectId(id_merchant)})
-        # if not bool(merchant):
-        #     return ("merchant not found"), 402
-        # id_rule = MGRule.filter_one({"name": Rule.VAL_NAME.value})
         data = MerchantConfigSchenma().load(request.json)
         current_config = MGconfig().find(
-            payload={CommonKey.ID_MERCHANT: "id_merchant"})
+            payload={CommonKey.ID_MERCHANT: id_merchant})
         if current_config != []:
-            raise Exception("Data exist")
+            return jsonify("Data exist"), 409
         else:
             payload = []
             for item in data:
-                merchant_config = {CommonKey.ID_MERCHANT: "id_merchant"}
+                merchant_config = {CommonKey.ID_MERCHANT: id_merchant}
                 if item == Rule.VAL_NAME.value:
                     values = ValNameSchema().load(data[Rule.VAL_NAME.value])
                     merchant_config.update({CommonKey.ID_RULE: "1"})
@@ -64,17 +61,15 @@ def create():
 
 
 @merchant_cf.route('/configs', methods=[HTTP.METHOD.GET])
-def get_by_id():
+@token_required
+def get_by_id(id_merchant):
     try:
-        # id_merchant = get_id_merchant_by_token(request)
-        # merchant = MGmerchant.filter_one({"_id": ObjectId(id_merchant)})
-        # if not bool(merchant):
-        #     return ("merchant not found"), 402
-        data = MGconfig().find({CommonKey.ID_MERCHANT: "id_merchant"})
+        data = MGconfig().find({CommonKey.ID_MERCHANT: id_merchant})
+        print(data, flush=True)
         if data == []:
             raise Exception("config of merchant not exist")
         else:
-            result = find_merchant_config(data)
+            result = find_merchant_config(data, id_merchant)
     except Exception as e:
         print(e, flush=True)
 
@@ -90,10 +85,10 @@ def convert_value(data):
     data.pop(CommonKey.UPDATE_BY)
     return data
 
-def find_merchant_config(data):
+def find_merchant_config(data, id_merchant):
     result = {}
     result.update({  # Nguoi create, update. time create va time update cua config cac rule trong mot merchant la nhu nhau
-        CommonKey.ID_MERCHANT: "id_merchant",
+        CommonKey.ID_MERCHANT: id_merchant,
         CommonKey.CREATE_AT: data[0][CommonKey.CREATE_AT],
         CommonKey.CREATE_BY: data[0][CommonKey.CREATE_BY],
         CommonKey.UPDATE_AT: data[0][CommonKey.UPDATE_AT],
@@ -122,16 +117,13 @@ def find_merchant_config(data):
 
 
 @merchant_cf.route('/configs', methods=[HTTP.METHOD.PUT])
-def update():
+@token_required
+def update(id_merchant):
     try:
-        # id_merchant = get_id_merchant_by_token(request)
-        # merchant = MGmerchant.filter_one({"_id": ObjectId(id_merchant)})
-        # if not bool(merchant):
-        #     return ("merchant not found"), 402
         data = MerchantConfigSchenma().load(request.json)
         time_update = timestamp_utc()
         current_config = MGconfig().find(
-            {CommonKey.ID_MERCHANT: "id_merchant"})
+            {CommonKey.ID_MERCHANT: id_merchant})
         if current_config == []:
             raise Exception("config of merchant not exist")
         for item in current_config:

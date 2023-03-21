@@ -40,12 +40,10 @@ def update_merchant(id: int):
             return {"code": 400, "message": "invalid ID"}, 400
 
     body = request.get_json()
-    print('asdad', body, id, flush=True)
     current_merchant = merchant_table.filter_one(
         {"_id": ObjectId(id)},
         {"_id": False}
     )
-    print('SAOOOOO', current_merchant, flush=True)
     if current_merchant is None:
         return {"code": 404, "message": "Merchant not found!"}, 404
 
@@ -55,7 +53,6 @@ def update_merchant(id: int):
         return {"code": 400, "message": err.messages}, 400
 
     val_body = {**current_merchant, **val_body}
-    print("VALadada", val_body, flush=True)
     result = merchant_table.update_one(
         query={"_id": ObjectId(id)},
         payload=val_body, updater=ObjectId("6417c64a19514401d8230118"))
@@ -88,19 +85,16 @@ def get_all():
     query = dict(request.args)
     query["fields"] = [v for v in query["fields"].split(',') if v] or []
     query["projection"] = {key: True for key in query["fields"]}
-    print("QRRRRRRRRRRRR", dict(query), len(query["fields"]), flush=True)
     merchant = merchant_table.find(
         {}, skip=query["skip"], limit=query["limit"], projection=query["projection"] or None)
 
     if not merchant:
         return {"code": 404, "message": "Merchant not found!"}, 404
-    print("AYYYYYYYY", merchant, flush=True)
     return get_str_from_id(list(merchant))
 
 
 @merchant_url.route('/<id>', methods=["DELETE"])
 def delete(id: int):
-    print("VALIDD0", not ObjectId().is_valid(id), flush=True)
     if not id or not ObjectId().is_valid(id):
         return {"code": 400, "message": "invalid ID"}, 400
 
@@ -109,5 +103,4 @@ def delete(id: int):
     if not merchant:
         return {"code": 404, "message": "Merchant not found!"}, 404
 
-    print("DELLL", merchant, flush=True)
     return {"code": 200, "data": {"id": id}}

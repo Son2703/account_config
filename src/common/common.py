@@ -18,3 +18,9 @@ class CommonKey:
 
     #mongo
     SET = "$set"
+
+    #user
+    ID_USER = "id_user"
+    USERNAME = "username"
+    PASSWORD = 'password'
+    STATUS = "status"

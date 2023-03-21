@@ -51,7 +51,6 @@ class Base:
 
 
     def delete(self, payload):
-        print("DELONEE", payload, flush=True)
         return self.col.find_one_and_delete(**payload)
     
     def create_many(self, payload, creator = None):

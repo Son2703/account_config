@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta
 from functools import wraps
 import secrets
+from bson import ObjectId
 
 from flask import jsonify, request
 import jwt
@@ -13,18 +14,14 @@ from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
+from src.models.mongo.merchant_db import MGMerchant
 
 
-rule_table = MGRule()
-user_table = MGUser()
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
 list_pass_user_table = MGListPassUser()
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
         user_info = data.copy()
-
-        if need_change_password_first(user_info):
-            raise "Need To change Passw"
 
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
@@ -48,23 +45,19 @@ def token_required(f):
         if not token:
             return jsonify({'message' : 'Token is missing !!'}), 401
   
-        try:
             # decoding the payload to fetch the stored details
-            data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-            current_user = user_table.query\
-                .filter_by(public_id = data['public_id'])\
-                .first()
-        except:
-            return jsonify({
-                'message' : 'Token is invalid !!'
-            }), 401
+        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        if not bool(current_user):
+            return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
-        return  f(current_user, *args, **kwargs)
+        return  f(data["id_merchant"], *args, **kwargs)
 
     return decorated
 
+
 def need_change_password_first(user_info:dict):
-    rule = rule_table.filter_one({"name": AccountRules.REQUIRE_CHANGE_PASS})
+    rule = MGRule().filter_one({"name": AccountRules.REQUIRE_CHANGE_PASS.value})
     # check rule is active
     if not rule:
         return
