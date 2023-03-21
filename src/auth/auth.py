@@ -35,7 +35,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     user_info.update({"exp": expire})
 
     token = jwt.encode(user_info, SECRET_KEY, algorithm=Authen.ALGORITHM)
-    # update_last_login(user_info)
+    # 
     return token
 
 

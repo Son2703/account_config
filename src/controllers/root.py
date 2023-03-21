@@ -1,13 +1,8 @@
 
 
 from datetime import timedelta
-<<<<<<< HEAD
-import datetime
-from bson import ObjectId
-=======
 from bson import ObjectId, json_util
 import json
->>>>>>> 0118348 (fix login)
 from flask import Blueprint, request
 from marshmallow import ValidationError
 from src.auth.auth import check_lock_time, create_access_token, get_verify_user_configs, lock_account, need_change_password_first, update_last_login
@@ -49,4 +44,7 @@ def login():
 
     except ValidationError as err:
         return {CommonKey.CODE: 400, "message": err.messages}, 400
+    
+    update_last_login(current_user)
+
     return {"code": 200, "data": {"token": token}}
