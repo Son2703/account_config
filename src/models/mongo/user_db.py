@@ -18,3 +18,7 @@ class MGUser(Base):
             return dict(payload)
         except Exception as error:
             raise error
+        
+    def find_extra(self, payload):
+        rs = self.col.find(**payload)
+        return list(rs)

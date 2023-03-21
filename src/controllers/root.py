@@ -31,10 +31,24 @@ def login():
         if current_user is None:
             return {"code": 404, "message": "User not found!"}, 404
 
+        # check account lock
+        result_lock_time = check_lock_time(current_user)
+        if result_lock_time:
+            return {"code": 401, "error": result_lock_time}, 401
+
         match_password = check_password_hash(
             current_user[CommonKey.PASSWORD], data[CommonKey.PASSWORD])
+
+        user_json = get_json_from_db(current_user)
+
         if not match_password:
+            lock_account(current_user)
             return {"code": 403, "message": "Login fail!"}, 403
+
+        config_mess = get_verify_user_configs(user_json)
+        if config_mess:
+            update_last_login(user_json)
+            return {"code": 401, "error": config_mess}, 401
 
         data_jwt = json.loads(json_util.dumps({CommonKey.ID_USER: str(
             current_user[CommonKey.ID]), CommonKey.ID_MERCHANT: current_user[CommonKey.ID_MERCHANT]}))
@@ -44,7 +58,7 @@ def login():
 
     except ValidationError as err:
         return {CommonKey.CODE: 400, "message": err.messages}, 400
-    
+
     update_last_login(current_user)
 
     return {"code": 200, "data": {"token": token}}
