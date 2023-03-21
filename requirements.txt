@@ -9,3 +9,5 @@ marshmallow~=3.19.0
 Jinja2~=3.1.2
 pymongo~=4.3.3
 kafka-python
+pytz==2022.7.1
+pyJWT~=2.6.0
