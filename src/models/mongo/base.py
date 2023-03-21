@@ -53,5 +53,4 @@ class Base:
         return self.col.delete_many({})
 
     def delete(self, payload):
-        print("DELONEE", payload, flush=True)
         return self.col.find_one_and_delete(**payload)
