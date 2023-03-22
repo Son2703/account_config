@@ -12,6 +12,7 @@ from src.common.common import CommonKey
 import math, jwt, json
 from configs.base import SECRET_KEY
 from configs.configs import Authen
+from src.auth.auth import get_data_by_decode
 
 class RuleControllers(BaseController):
     def __init__(self):
@@ -82,10 +83,9 @@ class RuleControllers(BaseController):
 
     def add_rule(self):
 
-        token = request.headers['Authorization']
-        data_login = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
         
         body_data = request.get_json()
+        _, id_user_login = get_data_by_decode()
 
         validate_rule = self.validate_add_rule(body_data)
         if validate_rule != False:
@@ -99,9 +99,8 @@ class RuleControllers(BaseController):
             CommonKey.STATUS: body_data[CommonKey.STATUS]
         }
 
-        # Fake cretor
-        cretor = ObjectId()
-
+        
+        cretor = ObjectId(id_user_login)
         MGRule().create(rule, cretor)
 
         querry = {CommonKey.CREATE_BY: cretor}
@@ -112,7 +111,10 @@ class RuleControllers(BaseController):
         return response.success(data, "Thêm mới rule thành công")
 
     def get_all(self):
-        
+
+        token = request.headers['Authorization']
+        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+
         params = request.args
         validate_get_list_rule, page, perpage = self.validate_get_list_rule(params)
         if validate_get_list_rule != False:
@@ -152,13 +154,16 @@ class RuleControllers(BaseController):
         return response.success(data)
     
     def change_status(self,rule_id, status):
+
+        _, id_user_login = get_data_by_decode()
+
         validate_get_one_rule = self.validate_get_one_rule(rule_id)
         if validate_get_one_rule != False:
             return validate_get_one_rule
         
         querry = {"_id": ObjectId(rule_id)}
         payload = { CommonKey.STATUS: status }
-        updater = ObjectId() # Fake updater
+        updater = ObjectId(id_user_login) # Fake updater
 
         MGRule().update_one(querry,payload,updater)
 

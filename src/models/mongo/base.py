@@ -21,7 +21,7 @@ class Base:
 
     def update_one(self, query, payload, updater=None):
         if updater:
-            payload['$set'].update({
+            payload.update({
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })

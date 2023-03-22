@@ -43,5 +43,6 @@ def active_one(rule_id):
 
 
 @rule_service.route(URI.RULE.RULE_DISABLE_LIST_RULE, methods = [HTTP.METHOD.PATCH])
+@token_required
 def disable_list():
     return  RuleControllers().disable_list()
