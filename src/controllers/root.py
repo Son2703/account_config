@@ -5,9 +5,9 @@ from bson import ObjectId, json_util
 import json
 from flask import Blueprint, request
 from marshmallow import ValidationError
+from src.apis import HTTP
 from src.auth.auth import check_lock_time, create_access_token, get_verify_user_configs, lock_account, need_change_password_first, update_last_login
-from src.common.time import timestamp_utc
-from src.helps.func import get_json_from_db
+from src.helps.func import get_json_from_mongo
 from src.models.mongo.user_db import MGUser
 
 from src.common.common import CommonKey
@@ -18,7 +18,7 @@ from werkzeug.security import check_password_hash
 root_url = Blueprint('root', __name__)
 
 
-@root_url.route("/login", methods=["POST"])
+@root_url.route("/login", methods=[HTTP.METHOD.POST])
 def login():
     try:
         data = SignInSchema().load(request.json)
@@ -39,7 +39,7 @@ def login():
         match_password = check_password_hash(
             current_user[CommonKey.PASSWORD], data[CommonKey.PASSWORD])
 
-        user_json = get_json_from_db(current_user)
+        user_json = get_json_from_mongo(current_user)
 
         if not match_password:
             lock_account(current_user)

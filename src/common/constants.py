@@ -11,3 +11,7 @@ class Rule(Enum):
     REQUIRE_CHANGE_PASS = "require_change_pass" # thay đổi lần đầu đăng nhập
     UNIQUE_PASS = "unique_pass" # mật khẩu không trùng
     LOCK_ACCOUNT = "lock_account"
+
+class Role(Enum):
+    ADMIN = "admin"
+    USER = "user"

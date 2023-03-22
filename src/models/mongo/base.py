@@ -1,7 +1,5 @@
-from datetime import datetime
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
-from src.helps.func import get_json_from_db
 
 
 class Base:
@@ -68,3 +66,7 @@ class Base:
 
         self.col.insert_many(payload)
         return payload
+
+    def find_extra(self, payload):
+        rs = self.col.find(**payload)
+        return list(rs)
