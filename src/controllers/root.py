@@ -12,6 +12,7 @@ from src.common.common import CommonKey
 from src.helps.func import get_json_from_mongo
 from src.models.mongo.user_db import MGUser
 
+from src.common.common import CommonKey
 from src.models.schemas.user_schemas import SignInSchema
 from werkzeug.security import check_password_hash
 
@@ -21,8 +22,6 @@ root_url = Blueprint('root', __name__)
 
 @root_url.route("/login", methods=[HTTP.METHOD.POST])
 def login():
-    body = request.get_json()
-    
     try:
         data = SignInSchema().load(request.json)
 

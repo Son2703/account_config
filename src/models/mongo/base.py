@@ -19,7 +19,7 @@ class Base:
 
     def update_one(self, query, payload, updater=None):
         if updater:
-            payload.update({
+            payload['$set'].update({
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })
@@ -43,15 +43,13 @@ class Base:
             return dict(payload)
         except Exception as error:
             raise error
-
-    def create_many(self, payload, creator=None):
-        pass
-
+        
+        
     def delete_all(self):
         return self.col.delete_many({})
 
+
     def delete(self, payload):
-        return self.col.find_one_and_delete(**payload)
         return self.col.find_one_and_delete(**payload)
     
     def create_many(self, payload, creator = None):
