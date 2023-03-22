@@ -1,5 +1,4 @@
 class URI:
-<<<<<<< HEAD
     class RULE:
         RULES="/rules"
         RULE_DETAIL="/rule/<rule_id>"
@@ -7,7 +6,6 @@ class URI:
         RULE_ACTIVE_ONE_RULE="/rule/<rule_id>/action/active"
         RULE_DISABLE_LIST_RULE="/rules/action/disable"
 
-=======
     class USER:
         USERS="/users"
         USER_DETAIL="/user/<user_id>"
@@ -15,4 +13,6 @@ class URI:
         USER_LOCK = "/user/actions/lock-user"
         USER_BULK_INSERT_MANY = "/users/actions/bulk_insert"
         USER_DELETE ="/user/<user_id>/actions/delete"
->>>>>>> future/user
+        USER_BULK_INSERT_MANY_EXCEL = "/users/actions/import_excel"
+
+    
