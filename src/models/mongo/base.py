@@ -1,7 +1,5 @@
-from datetime import datetime
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
-from src.helps.func import get_json_from_db
 
 
 class Base:
@@ -53,5 +51,22 @@ class Base:
         return self.col.delete_many({})
 
     def delete(self, payload):
-        print("DELONEE", payload, flush=True)
         return self.col.find_one_and_delete(**payload)
+        return self.col.find_one_and_delete(**payload)
+    
+    def create_many(self, payload, creator = None):
+        time_create = timestamp_utc()
+        for item in payload:
+            item.update({
+                CommonKey.CREATE_BY: creator,
+                CommonKey.UPDATE_BY: None,
+                CommonKey.CREATE_AT: time_create,
+                CommonKey.UPDATE_AT: None
+            })
+
+        self.col.insert_many(payload)
+        return payload
+
+    def find_extra(self, payload):
+        rs = self.col.find(**payload)
+        return list(rs)
