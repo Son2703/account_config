@@ -47,11 +47,11 @@ def token_required(f):
   
             # decoding the payload to fetch the stored details
         data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
-        if not bool(current_user):
-            return jsonify({"message": "Invalid token!"}), 401
+        # current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        # if not bool(current_user):
+        #     return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
-        return  f(data["id_merchant"], *args, **kwargs)
+        return  f(*args, **kwargs)
 
     return decorated
 
