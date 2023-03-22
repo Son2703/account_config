@@ -9,7 +9,7 @@ from src.controllers.merchant_config import merchant_cf
 
 from src.controllers.merchant import merchant_url
 from src.controllers.root import root_url
-from src.controllers.user import user_url
+from src.controllers.user_ex import user_url
 from src.apis.v1_0.user_service import user_service
 
 v1_0_prefix = '/api/v1.0'
