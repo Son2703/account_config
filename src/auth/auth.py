@@ -9,12 +9,10 @@ import jwt
 
 from configs.base import SECRET_KEY
 from configs.configs import Authen
-from src.common.constants import AccountRules
 from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
-from src.models.mongo.merchant_db import MGMerchant
 
 
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
@@ -80,3 +78,9 @@ def need_change_password_first(user_info:dict):
         return
     
     return True
+
+
+def get_data_by_decode():
+    token = request.headers['Authorization']
+    data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+    return data["id_merchant"], data["id_user"]
