@@ -6,13 +6,12 @@ from mobio.sdks.base.controllers import BaseController
 from mobio.libs.validator import Required, InstanceOf, In
 from src.common.constants import LIST_RULE_NAME
 from mobio.libs.validator import Validator, HttpValidator, VALIDATION_RESULT, Length, Required, InstanceOf, In, Password, Pattern
-import json
 from src.apis import response
 from src.common.common import is_ObjectID_valid
 from src.common.common import CommonKey
-import math
-
-
+import math, jwt, json
+from configs.base import SECRET_KEY
+from configs.configs import Authen
 
 class RuleControllers(BaseController):
     def __init__(self):
@@ -82,6 +81,10 @@ class RuleControllers(BaseController):
 
 
     def add_rule(self):
+
+        token = request.headers['Authorization']
+        data_login = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        
         body_data = request.get_json()
 
         validate_rule = self.validate_add_rule(body_data)
@@ -109,9 +112,8 @@ class RuleControllers(BaseController):
         return response.success(data, "Thêm mới rule thành công")
 
     def get_all(self):
-
-        params = request.args
         
+        params = request.args
         validate_get_list_rule, page, perpage = self.validate_get_list_rule(params)
         if validate_get_list_rule != False:
             return validate_get_list_rule
@@ -131,7 +133,7 @@ class RuleControllers(BaseController):
         data = {
             "total_page": total_page,
             "total_rule": total_rule,
-            "list_rute": json.loads(json_util.dumps(list_rule))
+            "list_rute": json.loads(json_util.dumps(list_rule)),
         }
         
         return response.success(data)
