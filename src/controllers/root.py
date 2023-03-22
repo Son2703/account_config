@@ -20,24 +20,24 @@ root_url = Blueprint('root', __name__)
 @root_url.route("/login", methods=["POST"])
 def login():
     try:
-        # data = SignInSchema().load(request.json)
+        data = SignInSchema().load(request.json)
 
-        # current_user = MGUser().filter_one({
-        #     CommonKey.USERNAME: data[CommonKey.USERNAME],
-        #     CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
-        #     CommonKey.STATUS: 1
-        # })
-        # if current_user is None:
-        #     return {"code": 404, "message": "User not found!"}, 404
+        current_user = MGUser().filter_one({
+            CommonKey.USERNAME: data[CommonKey.USERNAME],
+            CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
+            CommonKey.STATUS: 1
+        })
+        if current_user is None:
+            return {"code": 404, "message": "User not found!"}, 404
 
-        # match_password = check_password_hash(
-        #     current_user[CommonKey.PASSWORD], data[CommonKey.PASSWORD])
-        # if not match_password:
-        #     return {"code": 403, "message": "Login fail!"}, 403
-        current_user = {
-            CommonKey.ID_MERCHANT: "merchant_1",
-            CommonKey.ID: ObjectId(),
-        }
+        match_password = check_password_hash(
+            current_user[CommonKey.PASSWORD], data[CommonKey.PASSWORD])
+        if not match_password:
+            return {"code": 403, "message": "Login fail!"}, 403
+        # current_user = {
+        #     CommonKey.ID_MERCHANT: "merchant_1",
+        #     CommonKey.ID: ObjectId(),
+        # }
 
         data_jwt = json.loads(json_util.dumps({CommonKey.ID_USER: str(
             current_user[CommonKey.ID]), CommonKey.ID_MERCHANT: current_user[CommonKey.ID_MERCHANT]}))
