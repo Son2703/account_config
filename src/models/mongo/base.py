@@ -44,3 +44,6 @@ class Base:
     
     def delete_all(self):
         return self.col.delete_many({})
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)

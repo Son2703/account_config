@@ -18,7 +18,7 @@ class UserControllers():
     def __init__(self):
         pass
 
-    def Register(self):
+    def register(self):
         try:
 
             body_data = request.get_json()
@@ -42,7 +42,7 @@ class UserControllers():
         except Exception as e:
             print(e)
    
-    def ChangePass(self, user_id):
+    def change_pass(self, user_id):
         try:
             body_data = request.get_json()
             if ValidateUser.validate_change_pass(body_data, user_id) != False:
@@ -61,13 +61,13 @@ class UserControllers():
         except Exception as e:
             print(e)
 
-    def GetUser(self, user_id):
+    def get_user(self, user_id):
         try:
             user = UserModel().filter_one({"_id": ObjectId(user_id)})
             if user:                
                 return jsonify({
                     'code': 200,
-                    'message': 'Success 12312',
+                    'message': 'Success',
                     'results': {
                         "username" : user["username"],
                         "password" : user["password"],
@@ -75,11 +75,12 @@ class UserControllers():
                         "status": user["status"]
                     }
                 })
-                return jsonify({"code": 200, "message": "Change password successfully"}), 200
+            else:
+                return jsonify({"code": 409, "message": "user not exist"}) 
         except Exception as e:
             print(e)
 
-    def LockUser(self):
+    def lock_user(self):
         try:
             body_data = request.get_json()
             if ValidateUser.validate_lock_user(body_data) != False:
@@ -93,6 +94,26 @@ class UserControllers():
                 return jsonify({"code": 200, "message": "Lock User Successfully"}), 200
             else:
                 return jsonify({"code": 400, "message": "Fail to Lock User"}), 400
+
+        except Exception as e:
+            print(e)
+    
+    def delete_user(self, user_id):
+        try:
+            if UserModel().filter_one({"_id": ObjectId(user_id)}):
+                if UserModel().detele_one({"_id": ObjectId(user_id)}):
+                    return jsonify({"code": 200, "message": "User was Delete successfully"}), 200
+                else:
+                    return jsonify({"code": 400, "message": "Fail to Delete User"}), 400
+            else:
+                return jsonify({"code": 409, "message": "user not exist"}) 
+        except Exception as e:
+            print(e)
+
+    def bulk_insert(self):
+        try:
+            body_data = request.get_json()
+        
 
         except Exception as e:
             print(e)

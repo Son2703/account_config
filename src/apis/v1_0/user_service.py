@@ -7,19 +7,25 @@ user_service = Blueprint('user_service', __name__, template_folder='templates')
 
 
 @user_service.route(URI.USER.USERS, methods = [HTTP.METHOD.POST])
-def Register():
-    return UserControllers().Register()
+def register():
+    return UserControllers().register()
 
 @user_service.route(URI.USER.USER_CHANGEPASS, methods = [HTTP.METHOD.PUT])
-def ChangePass(user_id):
-    return UserControllers().ChangePass(user_id)
+def change_pass(user_id):
+    return UserControllers().change_pass(user_id)
 
 @user_service.route(URI.USER.USER_DETAIL, methods = [HTTP.METHOD.GET])
-def GetUser(user_id):
-    return UserControllers().GetUser(user_id)
+def get_user(user_id):
+    return UserControllers().get_user(user_id)
 
 @user_service.route(URI.USER.USER_LOCK, methods=[HTTP.METHOD.PUT])
-def LockUser():
-    return UserControllers().LockUser()
+def lock_user():
+    return UserControllers().lock_user()
 
+@user_service.route(URI.USER.USER_DELETE, methods = [HTTP.METHOD.DELETE])
+def delete_user(user_id):
+    return UserControllers().delete_user(user_id)
 
+@user_service.route(URI.USER.USER_BULK_INSERT_MANY, methods=[HTTP.METHOD.GET])
+def bulk_insert():
+    return UserControllers().bulk_insert()
