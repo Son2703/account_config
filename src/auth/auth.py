@@ -1,7 +1,6 @@
 
 from datetime import datetime, timedelta
 from functools import wraps
-import secrets
 from bson import ObjectId
 from dateutil.relativedelta import relativedelta
 
@@ -17,7 +16,6 @@ from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
-from src.models.mongo.merchant_db import MGMerchant
 
 rule_table = MGRule()
 user_table = MGUser()
