@@ -22,19 +22,21 @@ user_table = MGUser()
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
 list_pass_user_table = MGListPassUser()
 
+
 def create_access_token(data: dict, expires_delta: timedelta = None):
-        user_info = data.copy()
+    user_info = data.copy()
 
-        if expires_delta:
-            expire = datetime.utcnow() + expires_delta
-        else:
-            expire = datetime.utcnow() + timedelta(minutes=59)
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=59)
 
+    user_info.update({"exp": expire})
 
-        user_info.update({"exp": expire})
-        
-        token = jwt.encode(user_info, SECRET_KEY, algorithm=Authen.ALGORITHM)
-        return token
+    token = jwt.encode(user_info, SECRET_KEY, algorithm=Authen.ALGORITHM)
+    #
+    return token
+
 
 def token_required(f):
     @wraps(f)
@@ -55,6 +57,16 @@ def token_required(f):
         # returns the current logged in users context to the routes
         return  f(*args, **kwargs)
 
+            # decoding the payload to fetch the stored details
+        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        current_user = MGUser().filter_one({"id_user": ObjectId(
+            data["id_user"]), "id_merchant": data["id_merchant"]})
+        if not bool(current_user):
+            return jsonify({"message": "Invalid token!"}), 401
+        # returns the current logged in users context to the routes
+        return f(data["id_merchant"], *args, **kwargs)
+
+        return f(current_user, *args, **kwargs)
     return decorated
 
 
@@ -64,24 +76,23 @@ def need_change_password_first(user_info: dict, configs: list):
     # check rule is active
     if not rule:
         return
-    
+
     if not rule["status"]:
         return
-    
+
     # check config is active
     config = [data for data in configs if data["id_rule"] == rule["_id"]][0]
 
     if not config:
         return
-    
+
     if not config["status"]:
         return
-    
-    password_list_length = list_pass_user_table.find().count_documents()
 
-    if password_list_length != 1:
+    password_list_length = list_pass_user_table.find(
+        {"id_user": ObjectId(user_info["_id"])})
+    if len(password_list_length) != 1:
         return
-    
     return True
 
 
