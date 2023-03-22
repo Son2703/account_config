@@ -1,7 +1,6 @@
 
 from datetime import datetime, timedelta
 from functools import wraps
-import secrets
 from bson import ObjectId
 from dateutil.relativedelta import relativedelta
 
@@ -11,7 +10,7 @@ import pymongo
 
 from configs.base import SECRET_KEY
 from configs.configs import Authen
-from src.common.constants import AccountRules, Rule
+from src.common.constants import Rule
 from src.common.time import timestamp_utc
 from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
