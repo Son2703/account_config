@@ -16,6 +16,8 @@ ENV data_dir=$APPLICATION_DATA_DIR$ACCOUNT_CONFIG_FOLDER_NAME \
    log_dir=$APPLICATION_LOGS_DIR$ACCOUNT_CONFIG_FOLDER_NAME \
    monitor_log_dir=$APPLICATION_LOGS_DIR$ACCOUNT_CONFIG_FOLDER_NAME/monitor_logs/
 
+ENV SECRET_KEY=2-4hxMJ1EPPPX1jicIiudcuejKtC4bodKtnsK8ZxgKsXcxvDUoSuk4gtxfnswA65Mybg8x2cSCsDBL8S24000Q
+
 RUN mkdir -p $data_dir $log_dir $monitor_log_dir
 
 ADD . /home/mobio/projects/AccountConfig
