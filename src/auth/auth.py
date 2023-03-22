@@ -49,7 +49,7 @@ def token_required(f):
         if not bool(current_user):
             return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
-        return  f(*data["id_merchant"], *data["id_user"], *args, **kwargs)
+        return  f(*args, **kwargs)
 
     return decorated
 
@@ -78,3 +78,9 @@ def need_change_password_first(user_info:dict):
         return
     
     return True
+
+
+def get_data_by_decode():
+    token = request.headers['Authorization']
+    data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+    return data["id_merchant"], data["id_user"]
