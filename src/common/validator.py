@@ -45,7 +45,8 @@ class ValidateUser():
                 return jsonify({"code": 409, "message": val_result[VALIDATION_RESULT.ERRORS]})
 
             user = UserModel().filter_one({"_id": ObjectId(user_id)})
-
+            if not user:
+                 return jsonify({"code": 409, "message": "User not exist"})
             if  check_password_hash(user["username"], input_data["username"]):
                 return jsonify({"code": 409, "message": "username not match"})
 
