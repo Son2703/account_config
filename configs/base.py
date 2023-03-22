@@ -16,5 +16,9 @@ REDIS_PORT = os.getenv("REDIS_PORT")
 MONGO_USERNAME=os.getenv("MONGO_USERNAME")
 MONGO_PASSWORD=os.getenv("MONGO_PASSWORD")
 MONGO_DB = os.getenv("MONGO_DB")
+<<<<<<< HEAD
 RULE_COL_NAME = os.getenv("RULE_COL_NAME")
 SECRET_KEY = os.getenv("SECRET_KEY")
+=======
+USER_COL_NAME = os.getenv("USER_COL_NAME")
+>>>>>>> future/user

@@ -19,3 +19,8 @@ app.register_blueprint(rule_service, url_prefix=v1_0_prefix)
 app.register_blueprint(merchant_cf, url_prefix=v1_0_prefix)
 app.register_blueprint(merchant_url, url_prefix=f'{v1_0_prefix}/merchants')
 app.register_blueprint(root_url, url_prefix=v1_0_prefix)
+app.register_blueprint(checking_service_mod, url_prefix=v1_0_prefix)
+
+from src.apis.v1_0.user_service import user_service
+app.register_blueprint(user_service, url_prefix=v1_0_prefix)
+

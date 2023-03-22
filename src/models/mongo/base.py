@@ -70,3 +70,6 @@ class Base:
 
         self.col.insert_many(payload)
         return payload
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)
