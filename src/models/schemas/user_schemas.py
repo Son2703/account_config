@@ -26,21 +26,21 @@ class SignInSchema(UserBaseSchema):
 
 
 class UnlockUserSchema(Schema):
-    user_ids = fields.List(required=True)
+    user_ids = fields.List(required=True, cls_or_instance=fields.Str())
 
     class Meta:
         fields = ['user_ids']
 
 
-class InsertByFileSchema(Schema):
-    list = fields.Tuple(required=True)
+# class InsertByFileSchema(Schema):
+#     list = fields(required=True, tuple_fields=fields.Dict())
 
-    class Meta:
-        fields = ['list']
-
+#     class Meta:
+#         # fields = ['list']
+#         tuple_fields = ['list']
 
 class BulkInsertSchema(Schema):
-    array = fields.List(required=True)
+    array = fields.List(required=True, cls_or_instance=fields.Dict())
 
     class Meta:
         fields = ['list']
