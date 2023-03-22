@@ -12,13 +12,13 @@ class ValidateUser():
         try: 
             validate_pass = [Required, InstanceOf(str)]
             # validate_pass.append(Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)"))
-            users_validate = {
+            user_validate = {
                 'username': [Required, InstanceOf(str)],
                 # 'password': [Required, InstanceOf(str), Length(4, 9), Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)")],
                 # ^[0-9]{5}[!@#$%^&*()_+|~-]{7}$
                 'password': validate_pass
             }
-            valid = HttpValidator(users_validate)
+            valid = HttpValidator(user_validate)
             val_result = valid.validate_object(input_data)
             
             if not val_result[VALIDATION_RESULT.VALID]:
@@ -32,13 +32,13 @@ class ValidateUser():
                 print(e)
     def validate_change_pass(input_data, user_id):
         try:
-            users_validate =  {
+            user_validate =  {
                     'username': [Required, InstanceOf(str)],
                     'password': [Required, InstanceOf(str)],
                     'new_password': [Required, InstanceOf(str)],
                     'password_confirm': [Required, InstanceOf(str)]
                 }
-            valid = HttpValidator(users_validate)
+            valid = HttpValidator(user_validate)
             val_result = valid.validate_object(input_data)
             
             if not val_result[VALIDATION_RESULT.VALID]:
@@ -63,11 +63,11 @@ class ValidateUser():
     
     def validate_lock_user(input_data):
         try:
-            users_validate =  {
+            user_validate =  {
                 'user_id': [Required, InstanceOf(str)]
                     
             }
-            valid = HttpValidator(users_validate)
+            valid = HttpValidator(user_validate)
             val_result = valid.validate_object(input_data)
             
             if not val_result[VALIDATION_RESULT.VALID]:
@@ -78,3 +78,18 @@ class ValidateUser():
             return False
         except Exception as e:
             print(e)
+
+    def validate_bulk_insert(input_data):
+        try:
+            user_validate =  {
+                    'username': [Required, InstanceOf(str)],
+                    'password': [Required, InstanceOf(str)]
+                }
+            valid = HttpValidator(user_validate)
+            val_result = valid.validate_object(input_data)
+            if not val_result[VALIDATION_RESULT.VALID]:
+                    return jsonify({"code": 409, "message": val_result[VALIDATION_RESULT.ERRORS]})
+            return False
+        
+        except Exception as e:
+                print(e)

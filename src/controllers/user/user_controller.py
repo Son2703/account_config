@@ -113,8 +113,10 @@ class UserControllers():
     def bulk_insert(self):
         try:
             body_data = request.get_json()
-        
+            # if ValidateUser.validate_change_pass(body_data) != False:
+            #     return ValidateUser.validate_change_pass(body_data)
 
+            return jsonify({"code": 200, "message": body_data}), 200
         except Exception as e:
             print(e)
 
