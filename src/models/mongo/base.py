@@ -17,13 +17,17 @@ class Base:
             rs  = rs.skip(skip)
         return [x for x in rs]
 
-    def update_one(self, query, payload, updater = None):
+    def update_one(self, query, payload, updater=None):
         if updater:
             payload.update({
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })
-            return self.col.update_one(query, payload)
+            try:
+                self.col.update_one(query, {"$set": payload})
+                return dict(payload)
+            except Exception as error:
+                raise error
 
     def create(self, payload, creator = None):
         if creator:
