@@ -1,9 +1,8 @@
 
 
 from datetime import timedelta
-from json import json_util
+from bson import ObjectId, json_util
 import json
-from bson import ObjectId
 from flask import Blueprint, request
 from marshmallow import ValidationError
 from src.apis import HTTP
@@ -59,6 +58,8 @@ def login():
             data=data_jwt, expires_delta=timedelta(days=1))
 
     except ValidationError as err:
-        return {"code": 400, "message": err.messages}, 400
+        return {CommonKey.CODE: 400, "message": err.messages}, 400
+
+    update_last_login(current_user)
 
     return {"code": 200, "data": {"token": token}}
