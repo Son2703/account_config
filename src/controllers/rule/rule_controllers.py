@@ -1,5 +1,5 @@
 from flask import request,jsonify
-from src.models.mongo.rule_model import RuleModel
+from src.models.mongo.rule_db import MGRule
 from bson import ObjectId,json_util
 from mobio.libs.logging import MobioLogging
 from mobio.sdks.base.controllers import BaseController
@@ -9,6 +9,8 @@ from mobio.libs.validator import Validator, HttpValidator, VALIDATION_RESULT, Le
 import json
 from src.apis import response
 from src.common.common import is_ObjectID_valid
+from src.common.common import CommonKey
+import math
 
 
 
@@ -18,8 +20,8 @@ class RuleControllers(BaseController):
 
     def validate_add_rule(self, input_data):
         rule_validate = {
-            "name": [Required, In(LIST_RULE_NAME)],
-            "status": [InstanceOf(bool)]
+            CommonKey.NAME: [Required, In(LIST_RULE_NAME)],
+            CommonKey.STATUS: [InstanceOf(bool)]
         }
 
         valid = HttpValidator(rule_validate)
@@ -29,23 +31,23 @@ class RuleControllers(BaseController):
             return response.bad_request(val_result[VALIDATION_RESULT.ERRORS])
         
         #Name already exists
-        querry_name = {"name": input_data["name"]}
-        if RuleModel().count_documents(querry_name) > 0:
+        querry_name = {CommonKey.NAME: input_data[CommonKey.NAME]}
+        if MGRule().count_documents(querry_name) > 0:
             return response.bad_request("Rule đã có trong hệ thống")
         
         return False
     
     def validate_get_list_rule(self, params):
         
-        if "page" not in params:
+        if CommonKey.PAGE not in params:
             page = 1
         else:
-            page = params["page"]
+            page = params[CommonKey.PAGE]
 
-        if "perpage" not in params:
+        if CommonKey.PERPAGE not in params:
             perpage = 6
         else:
-            perpage = params["perpage"]
+            perpage = params[CommonKey.PERPAGE]
 
         try: 
             page = int(page)
@@ -61,7 +63,7 @@ class RuleControllers(BaseController):
             return response.bad_request("ID không hợp lệ")
         
         querry = {"_id": ObjectId(rule_id)}
-        if RuleModel().count_documents(querry) == 0:
+        if MGRule().count_documents(querry) == 0:
             return response.bad_request("Rule không có trong hệ thống")
 
         return False
@@ -87,20 +89,20 @@ class RuleControllers(BaseController):
             return validate_rule
 
 
-        if "status" not in body_data:
-            body_data["status"] = True
+        if CommonKey.STATUS not in body_data:
+            body_data[CommonKey.STATUS] = True
         rule = {
-            "name": body_data["name"],
-            "status": body_data["status"]
+            CommonKey.NAME: body_data[CommonKey.NAME],
+            CommonKey.STATUS: body_data[CommonKey.STATUS]
         }
 
         # Fake cretor
         cretor = ObjectId()
 
-        RuleModel().create(rule, cretor)
+        MGRule().create(rule, cretor)
 
-        querry = {"create_by": cretor}
-        rule = RuleModel().filter_one(querry)
+        querry = {CommonKey.CREATE_BY: cretor}
+        rule = MGRule().filter_one(querry)
 
         data = json.loads(json_util.dumps(rule))
         
@@ -116,8 +118,8 @@ class RuleControllers(BaseController):
 
         
         skip = (page-1) * perpage
-        total_rule = RuleModel().count_documents()
-        total_page = total_rule // perpage + 1
+        total_rule = MGRule().count_documents()
+        total_page = math.ceil(total_rule / perpage)
         
         if (page == -1):
             skip = None
@@ -125,7 +127,7 @@ class RuleControllers(BaseController):
             total_page = 1
 
 
-        list_rule = RuleModel().find(skip= skip, limit = perpage)
+        list_rule = MGRule().find(skip= skip, limit = perpage)
         data = {
             "total_page": total_page,
             "total_rule": total_rule,
@@ -141,7 +143,7 @@ class RuleControllers(BaseController):
             return validate_get_one_rule
 
         querry = {"_id": ObjectId(rule_id)}
-        rule = RuleModel().filter_one(querry)
+        rule = MGRule().filter_one(querry)
         data = json.loads(json_util.dumps(rule))
 
         
@@ -153,12 +155,12 @@ class RuleControllers(BaseController):
             return validate_get_one_rule
         
         querry = {"_id": ObjectId(rule_id)}
-        payload = { "status": status }
+        payload = { CommonKey.STATUS: status }
         updater = ObjectId() # Fake updater
 
-        RuleModel().update_one(querry,payload,updater)
+        MGRule().update_one(querry,payload,updater)
 
-        rule = RuleModel().filter_one(querry)
+        rule = MGRule().filter_one(querry)
         data = json.loads(json_util.dumps(rule))
 
         return response.success(data)

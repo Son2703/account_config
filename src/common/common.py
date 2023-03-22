@@ -6,6 +6,8 @@ class CommonKey:
     UPDATE_AT = "update_at"
     CREATE_BY = "create_by"
     UPDATE_BY = "update_by"
+    PAGE      = "page"
+    PERPAGE   = "perpage"
 
 
     ID = "_id"
@@ -15,6 +17,7 @@ class CommonKey:
 
     #Rule
     ID_RULE = "id_rule"
+    NAME= "name"
 
     #result
     CODE = "code"
