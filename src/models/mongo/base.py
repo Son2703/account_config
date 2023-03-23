@@ -20,7 +20,7 @@ class Base:
 
     def update_one(self, query, payload, updater=None):
         if updater:
-            payload['$set'].update({
+            payload.update({
                 CommonKey.UPDATE_BY: updater,
                 CommonKey.UPDATE_AT: timestamp_utc()
             })
@@ -51,7 +51,7 @@ class Base:
 
 
     def delete(self, payload):
-        return self.col.find_one_and_delete(**payload)
+        return self.col.delete_one(payload)
     
     def create_many(self, payload, creator = None):
         time_create = timestamp_utc()

@@ -11,7 +11,7 @@ from mobio.libs.logging import MobioLogging, LoggingConstant
 from mobio.sdks.base.common import CONSTANTS
 from mobio.sdks.base.common.lang_config import LangError
 from mobio.sdks.base.common.mobio_exception import BaseMoError, DBLogicError, InputNotFoundError, LogicSystemError, \
-    ParamInvalidError, CustomError, CustomUnauthorizeError
+    ParamInvalidError, CustomError, CustomUnauthorizeError, UnauthorizationError
 from mobio.sdks.base.common.system_config import SystemConfig
 from mobio.sdks.admin.http_jwt_auth import HttpJwtAuth
 from mobio.sdks.admin.mobio_authorization import MobioAuthorization
@@ -57,6 +57,11 @@ def bad_request(exception=None):
         exception = DBLogicError(LangError.BAD_REQUEST)
     return jsonify(exception.get_message()), 400
 
+# @app.errorhandler(401)
+def unauthor(exception=None):
+    if exception is None:
+        exception = UnauthorizationError(LangError.BAD_REQUEST)
+    return jsonify(exception.get_message()), 401
 
 # @app.errorhandler(404)
 def not_found(exception=None):
@@ -78,6 +83,10 @@ def param_invalid_error(exception):
         exception = ParamInvalidError(LangError.VALIDATE_ERROR)
     return jsonify(exception.get_message()), 412
 
+def conflict(exception=None):
+    if exception is None:
+        exception = DBLogicError(LangError.ALREADY_EXIST)
+    return jsonify(exception.get_message()), 409
 
 # @app.errorhandler(413)
 def custom_exception(exception=None):

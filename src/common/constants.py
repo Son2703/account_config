@@ -1,8 +1,5 @@
 from enum import Enum
 
-class TimeConfig(Enum):
-    UTC_ZONE = "UTC"
-
 class Rule(Enum):
     VAL_NAME = "val_name"
     VAL_PASS = "val_pass"
@@ -23,3 +20,10 @@ class DatabaseName(Enum):
     COL_MERCHANT_RULE_ASSIGNMENT = "merchant_rule_assignments"
     COL_MERCHANT = "merchants"
 
+class Status(Enum):
+    ACTIVATE = 1
+    DEACTIVATE = 2
+    DELETE = 3
+
+class TimeChoise(Enum):
+    ONE_HOUR = 1

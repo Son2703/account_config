@@ -10,13 +10,10 @@ import jwt
 from configs.base import SECRET_KEY
 from configs.configs import Authen
 from src.models.mongo.list_pass_user_db import MGListPassUser
-from src.models.mongo.merchant_rule_assignment import MGMerchantRuleAssignment
+from src.models.mongo.merchant_cf_db import MGconfig
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
 
-
-merchant_rule_assignment_table = MGMerchantRuleAssignment()
-list_pass_user_table = MGListPassUser()
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
         user_info = data.copy()
@@ -45,7 +42,7 @@ def token_required(f):
   
             # decoding the payload to fetch the stored details
         data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        current_user = MGUser().filter_one({"_id": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
         if not bool(current_user):
             return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
@@ -53,31 +50,6 @@ def token_required(f):
 
     return decorated
 
-
-def need_change_password_first(user_info:dict):
-    rule = MGRule().filter_one({"name": AccountRules.REQUIRE_CHANGE_PASS.value})
-    # check rule is active
-    if not rule:
-        return
-    
-    if not rule["status"]:
-        return
-    
-    # check config is active
-    config = merchant_rule_assignment_table.filter_one({"id_rule": rule["_id"], "id_merchant": user_info["id_merhcnat"]})
-
-    if not config:
-        return
-    
-    if not config["status"]:
-        return
-    
-    password_list_length = list_pass_user_table.find().count_documents()
-
-    if password_list_length != 1:
-        return
-    
-    return True
 
 
 def get_data_by_decode():

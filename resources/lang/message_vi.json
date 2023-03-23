@@ -42,5 +42,17 @@
   "message_success": {
     "message": "request thành công.",
     "code": 200
+  },
+  "user_not_activate": {
+    "message": "tai khoan khong con duoc su dung trong he thong.",
+    "code": 404
+  },
+  "not_match_password": {
+    "message": "Mat khau khong khop.",
+    "code": 404
+  },
+  "data_exist": {
+    "message": "data already exists in the system",
+    "code": 409
   }
 }
