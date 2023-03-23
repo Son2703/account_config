@@ -1,6 +1,6 @@
 from src.common.common import CommonKey
 from src.common.time import timestamp_utc
-from src.helps.func import get_json_from_db
+
 
 
 class Base:
@@ -48,8 +48,17 @@ class Base:
         
     def delete_all(self):
         return self.col.delete_many({})
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)
 
 
+
+
+    def count_documents(self, querry={}):
+        return self.col.count_documents(querry)
+    
+    
     def delete(self, payload):
         return self.col.delete_one(payload)
     
@@ -65,3 +74,10 @@ class Base:
 
         self.col.insert_many(payload)
         return payload
+
+    def find_extra(self, payload):
+        rs = self.col.find(**payload)
+        return list(rs)
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)
