@@ -22,3 +22,4 @@ class DatabaseName(Enum):
     COL_LIST_PASS_USER = "list_pass_users"
     COL_MERCHANT_RULE_ASSIGNMENT = "merchant_rule_assignments"
     COL_MERCHANT = "merchants"
+
