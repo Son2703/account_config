@@ -1,6 +1,6 @@
 from flask import jsonify
 
-def success(data, message = 'Thành công'):
+def success(data = None, message = 'Thành công'):
     response = {
         "code": 200,
         "message": message,

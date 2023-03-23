@@ -45,6 +45,10 @@ def login():
         if not match_password:
             lock_account(current_user)
             return {"code": 403, "message": "Login fail!"}, 403
+        # current_user = {
+        #     CommonKey.ID_MERCHANT: "merchant_1",
+        #     CommonKey.ID: ObjectId(),
+        # }
 
         config_mess = get_verify_user_configs(user_json)
         if config_mess:
