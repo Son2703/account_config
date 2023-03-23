@@ -2,6 +2,7 @@ from src.common.common import CommonKey
 from src.common.time import timestamp_utc
 
 
+
 class Base:
     def __init__(self, col=None) -> None:
         self.col = col
@@ -43,15 +44,22 @@ class Base:
             return dict(payload)
         except Exception as error:
             raise error
-
-    def create_many(self, payload, creator=None):
-        pass
-
+        
+        
     def delete_all(self):
         return self.col.delete_many({})
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)
 
+
+
+
+    def count_documents(self, querry={}):
+        return self.col.count_documents(querry)
+    
+    
     def delete(self, payload):
-        return self.col.find_one_and_delete(**payload)
         return self.col.find_one_and_delete(**payload)
     
     def create_many(self, payload, creator = None):
@@ -70,3 +78,6 @@ class Base:
     def find_extra(self, payload):
         rs = self.col.find(**payload)
         return list(rs)
+    
+    def detele_one(self, payload):
+        return self.col.delete_one(payload)

@@ -47,7 +47,15 @@ def token_required(f):
             token = request.headers['Authorization']
         # return 401 if token is not passed
         if not token:
-            return jsonify({'message': 'Token is missing !!'}), 401
+            return jsonify({'message' : 'Token is missing !!'}), 401
+  
+            # decoding the payload to fetch the stored details
+        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        if not bool(current_user):
+            return jsonify({"message": "Invalid token!"}), 401
+        # returns the current logged in users context to the routes
+        return  f(*args, **kwargs)
 
             # decoding the payload to fetch the stored details
         data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
@@ -267,3 +275,8 @@ def need_update_with_config(user_info, configs: list):
             return {"code": Rule.VAL_PASS.value, "message": "You need to change password!"}
 
     return get_validation(validation[Rule.VAL_NAME.value], val_password=[Rule.VAL_PASS.value])
+
+def get_data_by_decode():
+    token = request.headers['Authorization']
+    data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+    return data["id_merchant"], data["id_user"]

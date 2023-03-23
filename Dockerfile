@@ -24,8 +24,6 @@ ADD . /home/mobio/projects/AccountConfig
 
 RUN chmod +x *.sh
 
-# RUN rm /tmp/mongodb-27017.sock
-
 CMD ["python3", "app_account_config_api.py", "tail -f /dev/null"]
 
 EXPOSE 8000

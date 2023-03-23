@@ -7,6 +7,7 @@ from flask import Blueprint, request
 from marshmallow import ValidationError
 from src.apis import HTTP
 from src.auth.auth import check_lock_time, create_access_token, get_verify_user_configs, lock_account, need_change_password_first, update_last_login
+from src.common.common import CommonKey
 from src.helps.func import get_json_from_mongo
 from src.models.mongo.user_db import MGUser
 
@@ -44,6 +45,10 @@ def login():
         if not match_password:
             lock_account(current_user)
             return {"code": 403, "message": "Login fail!"}, 403
+        # current_user = {
+        #     CommonKey.ID_MERCHANT: "merchant_1",
+        #     CommonKey.ID: ObjectId(),
+        # }
 
         config_mess = get_verify_user_configs(user_json)
         if config_mess:
