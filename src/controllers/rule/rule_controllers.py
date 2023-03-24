@@ -38,7 +38,7 @@ class RuleControllers():
         cretor = ObjectId(id_user_login)
         MGRule().create(rule, cretor)
 
-        querry = {CommonKey.CREATE_BY: cretor}
+        querry = {CommonKey.NAME: body_data[CommonKey.NAME]}
         rule = MGRule().filter_one(querry)
 
         data = json.loads(json_util.dumps(rule))
