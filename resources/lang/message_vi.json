@@ -49,10 +49,10 @@
   },
   "invalid_id": {
     "message": "ID không hợp lệ.",
+    "code": 400
+  },
   "message_incorrect": {
       "message" :"%s %s không chính xác.",
       "code": 400
-    }
   }
-  
 }

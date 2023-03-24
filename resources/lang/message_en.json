@@ -48,10 +48,11 @@
     "code": 200
   },
   "invalid_id": {
-    "message": "ID not invalid.",
-    "message_incorect": {
+      "message": "ID not invalid.",
+      "code": 400
+  },
+  "message_incorect": {
       "message" :"%s %s incorrect.",
       "code": 400
-    }
   }
 }
