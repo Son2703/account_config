@@ -71,7 +71,6 @@ class Base:
                 CommonKey.CREATE_AT: time_create,
                 CommonKey.UPDATE_AT: None
             })
-
         self.col.insert_many(payload)
         return payload
 

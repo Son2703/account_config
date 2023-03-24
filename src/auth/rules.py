@@ -1,5 +1,5 @@
 from src.models.mongo.rule_db import MGRule
-from src.models.mongo.merchant_cf_db import MGconfig
+from src.models.mongo.merchant_cf_db import MGMerchantRuleAssignment
 from src.models.mongo.list_pass_user_db import MGListPassUser
 from src.common.constants import Rule
 from src.common.common import *
@@ -47,7 +47,7 @@ class RuleAuth():
             return
 
         # check config is active
-        config = MGconfig().filter_one(
+        config = MGMerchantRuleAssignment().filter_one(
             {"id_rule": rule["_id"], "id_merchant": user_info["id_merhcnat"]})
         if not config:
             return
@@ -61,7 +61,7 @@ class RuleAuth():
 
     @staticmethod
     def validate_name(name, id_merchant):
-        config = MGconfig().filter_one(
+        config = MGMerchantRuleAssignment().filter_one(
             {CommonKey.ID_MERCHANT: id_merchant, CommonKey.ID_RULE: "1"})
         if len(name) < config[CommonKey.MIN_LEN]:
             return f"the minimum length of the name is not enough, {config[CommonKey.MIN_LEN]} character", 422

@@ -8,6 +8,7 @@ user_service = Blueprint('user_service', __name__, template_folder='templates')
 
 @user_service.route(URI.USER.USERS, methods = [HTTP.METHOD.POST])
 def register():
+    print("2222222", flush=True)
     return UserControllers().register()
 
 @user_service.route(URI.USER.USER_CHANGEPASS, methods = [HTTP.METHOD.PUT])

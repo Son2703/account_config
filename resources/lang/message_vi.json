@@ -54,5 +54,9 @@
   "data_exist": {
     "message": "data already exists in the system",
     "code": 409
+  },
+  "not_create_config": {
+    "message": "khong the tao config do khong co rule %s trong he thong hoac rule khong duoc dung nua",
+    "code": 400
   }
 }

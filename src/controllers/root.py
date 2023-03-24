@@ -4,15 +4,12 @@ from datetime import timedelta
 from bson import ObjectId, json_util
 import json
 from flask import Blueprint, request
-<<<<<<< HEAD
 from src.auth.auth import create_access_token
-=======
 from marshmallow import ValidationError
 from src.apis import HTTP
 from src.auth.auth import check_lock_time, create_access_token, get_verify_user_configs, lock_account, need_change_password_first, update_last_login
 from src.common.common import CommonKey
 from src.helps.func import get_json_from_mongo
->>>>>>> 4772225098c2ca0f5298724f0725de4974ce8e74
 from src.models.mongo.user_db import MGUser
 from src.apis import *
 from src.common.constants import *
@@ -52,10 +49,6 @@ def login():
         user_json = get_json_from_mongo(current_user)
 
         if not match_password:
-<<<<<<< HEAD
-            return unauthor(Message.NOT_MATCH_PASSWORD)
-
-=======
             lock_account(current_user)
             return {"code": 403, "message": "Login fail!"}, 403
         # current_user = {
@@ -67,18 +60,11 @@ def login():
         if config_mess:
             update_last_login(user_json)
             return {"code": 401, "error": config_mess}, 401
->>>>>>> 4772225098c2ca0f5298724f0725de4974ce8e74
 
         data_jwt = json.loads(json_util.dumps({CommonKey.ID_USER: str(
             current_user[CommonKey.ID]), CommonKey.ID_MERCHANT: current_user[CommonKey.ID_MERCHANT]}))
 
         token = create_access_token(
-<<<<<<< HEAD
-            data=data_jwt, expires_delta=timedelta(days=TimeChoise.ONE_HOUR.value))
-    except Exception as e:
-        print(e, flush=True)
-    return build_response_message({"Authorization": token})
-=======
             data=data_jwt, expires_delta=timedelta(days=1))
 
     except ValidationError as err:
@@ -87,4 +73,3 @@ def login():
     update_last_login(current_user)
 
     return {"code": 200, "data": {"token": token}}
->>>>>>> 4772225098c2ca0f5298724f0725de4974ce8e74

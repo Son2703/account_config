@@ -27,7 +27,7 @@ class CommonKey:
     SPECIAL_CHARACTER = "special_character"
     UPPER = "upper"
     LOWECASE = "lowecase"
-    
+    NAME = "name"
 
     #result
     CODE = "code"

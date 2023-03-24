@@ -13,18 +13,16 @@ from configs.configs import Authen
 from src.common.constants import Rule
 from src.common.time import timestamp_utc
 from src.models.mongo.list_pass_user_db import MGListPassUser
-from src.models.mongo.merchant_cf_db import MGconfig
+from src.models.mongo.merchant_cf_db import MGMerchantRuleAssignment
 from src.models.mongo.rule_db import MGRule
 from src.models.mongo.user_db import MGUser
+from src.models.mongo.merchant_cf_db import MGMerchantRuleAssignment
 
-<<<<<<< HEAD
-=======
 rule_table = MGRule()
 user_table = MGUser()
 merchant_rule_assignment_table = MGMerchantRuleAssignment()
 list_pass_user_table = MGListPassUser()
 
->>>>>>> 4772225098c2ca0f5298724f0725de4974ce8e74
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     user_info = data.copy()
@@ -62,8 +60,6 @@ def token_required(f):
     return decorated
 
 
-<<<<<<< HEAD
-=======
 def need_change_password_first(user_info: dict, configs: list):
     rule = rule_table.filter_one({"name": Rule.REQUIRE_CHANGE_PASS.value, "status": True}, {
                                  "_id": True, "status": True})
@@ -89,7 +85,6 @@ def need_change_password_first(user_info: dict, configs: list):
         return
     return True
 
->>>>>>> 4772225098c2ca0f5298724f0725de4974ce8e74
 
 def lock_account(user_info: dict):
     rule = rule_table.filter_one(

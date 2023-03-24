@@ -9,4 +9,4 @@ class MGRule(Base):
     def __init__(self, col=None) -> None:
         super().__init__(col)
         # common format, need follow
-        self.col = RULE_COL_NAME
+        self.col = CONFIG_ACCOUNT_DB["rules"]

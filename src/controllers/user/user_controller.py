@@ -36,6 +36,7 @@ class UserControllers():
             }
             # Fake cretor
             cretor = ObjectId()
+            print(data_final, flush=True)
             if UserModel().create(data_final, cretor):
                 return jsonify({"code": 200, "message": "User has been registered"}), 200
             else:
