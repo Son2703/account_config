@@ -28,6 +28,7 @@ class CommonKey:
     UPPER = "upper"
     LOWECASE = "lowecase"
     NAME = "name"
+    RULE = "rule"
 
     #result
     CODE = "code"

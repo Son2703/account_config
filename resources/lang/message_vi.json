@@ -3,6 +3,10 @@
     "message": "Request không hợp lệ.",
     "code": 400
   },
+  "bad_request_page_perpage": {
+    "message": "Page, perpage phải là số  nguyên.",
+    "code": 400
+  },
   "unauthorized": {
     "message": "JWT không hợp hoặc đã hết hạn, vui lòng đăng nhập lại.",
     "code": 401
@@ -78,5 +82,13 @@
   "field_character_error": {
     "message": "%s khong hop le do cac ki tu trong field khong phu hop voi config",
     "code": 422
+  },
+  "invalid_id": {
+    "message": "ID không hợp lệ.",
+    "code": 400
+  },
+  "message_incorrect": {
+      "message" :"%s %s không chính xác.",
+      "code": 400
   }
 }

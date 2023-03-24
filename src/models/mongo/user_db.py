@@ -5,7 +5,7 @@ from src.common.common import CommonKey
 from src.common.constants import DatabaseName
 from src.common.time import timestamp_utc
 from src.models.mongo.base import Base
-from configs.configs import USER_COL_NAME
+from src.common.constants import DatabaseName
 
 
 class MGUser(Base):

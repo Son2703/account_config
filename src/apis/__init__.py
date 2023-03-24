@@ -139,3 +139,19 @@ def try_catch_error(f):
             return internal_server_error(e)
 
     return decorated
+
+def response_message(data=None):
+    message = BaseMoError(LangError.MESSAGE_SUCCESS).get_message()
+    log_mod = sys_conf.get_section_map(CONSTANTS.LOGGING_MODE)
+    if int(log_mod[LoggingConstant.LOG_FOR_REQUEST_SUCCESS]) == 1:
+        MobioLogging().debug('response: %s' % (data or message))
+ 
+    response = {
+        "code": 200,
+        "message": message["message"],
+        "lang": message["lang"],
+        "data": data
+    }
+    
+
+    return jsonify(response),200
