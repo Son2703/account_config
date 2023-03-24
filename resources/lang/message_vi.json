@@ -47,6 +47,42 @@
     "message": "request thành công.",
     "code": 200
   },
+  "user_not_activate": {
+    "message": "tai khoan khong con duoc su dung trong he thong.",
+    "code": 404
+  },
+  "not_match_password": {
+    "message": "Mat khau khong khop.",
+    "code": 404
+  },
+  "data_exist": {
+    "message": "data already exists in the system",
+    "code": 409
+  },
+  "not_create_config": {
+    "message": "khong the tao config do khong co rule %s trong he thong hoac rule khong duoc dung nua",
+    "code": 400
+  },
+  "not_found_merchant": {
+    "message": "Khong tim thay merchant",
+    "code": 404
+  },
+  "min_len_error": {
+    "message": "khong du do dai toi thieu: %s",
+    "code": 422
+  },
+  "max_len_error": {
+    "message": "vuot qua do dai toi da: %s",
+    "code": 422
+  },
+  "min_character_error": {
+    "message": "can co %s ki tu %s trong %s",
+    "code": 422
+  },
+  "field_character_error": {
+    "message": "%s khong hop le do cac ki tu trong field khong phu hop voi config",
+    "code": 422
+  },
   "invalid_id": {
     "message": "ID không hợp lệ.",
     "code": 400

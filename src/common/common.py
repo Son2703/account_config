@@ -15,14 +15,25 @@ class CommonKey:
     #Merchant
     ID_MERCHANT = "id_merchant"
 
-    #Rule
+    #Rule field
     ID_RULE = "id_rule"
-    NAME= "name"
+    MIN_LEN = "min_len"
+    MAX_LEN = "max_len"
+    ALL = "all"
+    AT_LEAST = "at_least"
+    CHECK = "check"
+    VALUE = "value"
+    NUMBER = "number"
+    SPECIAL_CHARACTER = "special_character"
+    UPPER = "upper"
+    LOWECASE = "lowecase"
+    NAME = "name"
     RULE = "rule"
 
     #result
     CODE = "code"
     DATA = "data"
+    AUTHORIZATION = "authorization"
 
     #mongo
     SET = "$set"

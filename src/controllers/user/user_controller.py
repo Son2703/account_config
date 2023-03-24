@@ -12,6 +12,7 @@ from src.models.mongo.user_db import MGUser
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.controllers.user.validator import ValidateUser as validate
 from src.auth.auth import get_data_by_decode
+from src.auth.rules import RuleAuth
 
 # from producer import MessageProducer
 # from consumer import MessageConsumer
@@ -33,6 +34,12 @@ class UserControllers():
         try:
             merchant_id, user_id = get_data_by_decode()
             body_data = request.get_json()
+            error_val_name = RuleAuth.validate_name(body_data[CommonKey.USERNAME], merchant_id)
+            if bool(error_val_name):
+                return error_val_name
+            error_val_pass = RuleAuth.validate_pass(body_data[CommonKey.PASSWORD], merchant_id)
+            if bool(error_val_pass):
+                return error_val_pass
             if bool(validate.validate_add_user(body_data)):
                 return validate.validate_add_user(body_data)
             if MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: ObjectId(merchant_id)}):
@@ -135,7 +142,6 @@ class UserControllers():
     def bulk_insert(self):
         try:
             body_data = request.get_json()
-
 
             return jsonify({"code": 200, "message": body_data}), 200
         except Exception as e:

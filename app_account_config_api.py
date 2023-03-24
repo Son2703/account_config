@@ -5,7 +5,6 @@
 """
 from flask_cors import CORS
 from src.apis.v1_0 import *
-
 CORS(app)
 """
 @api {get} /user/:id Request User information
