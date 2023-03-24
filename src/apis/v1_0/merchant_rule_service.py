@@ -7,17 +7,17 @@ from src.controllers.merchant_rule.merchant_config_controllers import MerchantRu
 merchant_role = Blueprint("config", __name__)
 
 @merchant_role.route('/configs', methods=[HTTP.METHOD.POST])
-# @token_required
+@token_required
 def create_config():
     return MerchantRuleControllers.create()
 
 @merchant_role.route('/configs', methods=[HTTP.METHOD.GET])
-# @token_required
+@token_required
 def get_config():
     return MerchantRuleControllers.get()
 
 @merchant_role.route('/configs', methods=[HTTP.METHOD.PUT])
-# @token_required
+@token_required
 def update_config():
     return MerchantRuleControllers.update()
 

@@ -7,5 +7,5 @@ class Message:
     #config
     DATA_EXIST = "data_exist"
     NOT_CREATE_CONFIG = "not_create_config"
-
+    NOT_FOUND_MERCHANT = "not_found_merchant"
     #rule 

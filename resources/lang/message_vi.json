@@ -58,5 +58,9 @@
   "not_create_config": {
     "message": "khong the tao config do khong co rule %s trong he thong hoac rule khong duoc dung nua",
     "code": 400
+  },
+  "not_found_merchant": {
+    "message": "Khong tim thay merchant",
+    "code": 404
   }
 }
