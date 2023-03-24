@@ -14,10 +14,10 @@ from configs.base import SECRET_KEY
 from configs.configs import Authen
 from src.auth.auth import get_data_by_decode
 
-class RuleControllers(BaseController):
+class RuleControllers():
     def __init__(self):
-        BaseController().__init__()
-
+        pass
+    
     def validate_add_rule(self, input_data):
         rule_validate = {
             CommonKey.NAME: [Required, In(LIST_RULE_NAME)],
@@ -149,6 +149,7 @@ class RuleControllers(BaseController):
 
         querry = {"_id": ObjectId(rule_id)}
         rule = MGRule().filter_one(querry)
+
         data = json.loads(json_util.dumps(rule))
 
         

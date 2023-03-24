@@ -8,6 +8,7 @@ from src.apis import response
 # from producer import MessageProducer
 # from consumer import MessageConsumer
 import pandas as pd
+from kafka import KafkaProducer
 
 broker = 'localhost:9092'
 topic = 'test-topic'
@@ -122,15 +123,20 @@ class UserControllers():
         except Exception as e:
             print(e)
 
+
     def excel_insert(self):
         fileExcel = request.files['file']
- 
-        df = pd.read_excel(fileExcel, engine='openpyxl')
-
-    
+        
+        if fileExcel.filename.endswith('.csv'):
+            df = pd.read_csv(fileExcel)         
+        elif fileExcel.filename.endswith('.xlsx'):
+            df = pd.read_excel(fileExcel, engine='openpyxl')
+        else:
+            return response.bad_request("File không đúng định dạng")
+        
         data = df.to_dict(orient='records')
 
-
+    
         return response.success(data)
 
 
