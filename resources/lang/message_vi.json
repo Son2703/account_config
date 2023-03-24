@@ -3,6 +3,10 @@
     "message": "Request không hợp lệ.",
     "code": 400
   },
+  "bad_request_page_perpage": {
+    "message": "Page, perpage phải là số  nguyên.",
+    "code": 400
+  },
   "unauthorized": {
     "message": "JWT không hợp hoặc đã hết hạn, vui lòng đăng nhập lại.",
     "code": 401
@@ -42,5 +46,9 @@
   "message_success": {
     "message": "request thành công.",
     "code": 200
+  },
+  "invalid_id": {
+    "message": "ID không hợp lệ.",
+    "code": 400
   }
 }
