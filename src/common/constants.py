@@ -26,3 +26,12 @@ class AccountRules(Enum):
    LOCK_ACCOUNT = "lock_account" # khóa tài khoản
    VALUE_WLOGIN = "value_wlogin" # giá trị lần đang nhâp sai
    TIME_LOCK = "time_lock" # thời gian khóa tài khoản
+
+
+
+class DatabaseName(Enum):
+    COL_RULE = "rules"
+    COL_USER = "users"
+    COL_LIST_PASS_USER = "list_pass_users"
+    COL_MERCHANT_RULE_ASSIGNMENT = "merchant_rule_assignments"
+    COL_MERCHANT = "merchants"
