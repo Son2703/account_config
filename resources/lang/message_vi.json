@@ -42,5 +42,10 @@
   "message_success": {
     "message": "request thành công.",
     "code": 200
+  },
+  "message_incorrect": {
+    "message" :"%s %s không chính xác.",
+    "code": 400
   }
+  
 }
