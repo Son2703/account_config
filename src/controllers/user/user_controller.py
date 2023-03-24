@@ -63,8 +63,7 @@ class UserControllers():
             if bool(validate.validate_change_pass(body_data)):
                 return validate.validate_change_pass(body_data)
 
-            user = MGUser().filter_one({CommonKey.ID: ObjectId(
-                user_id), CommonKey.ID_MERCHANT: merchant_id})
+            user = MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id})
             if not user:
                 return response.not_found()
 

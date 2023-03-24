@@ -13,3 +13,4 @@ class URI:
         LOCK = "/users/actions/lock-user"
         BULK_INSERT_MANY = "/users/actions/bulk_insert"
         DELETE ="/users/<id_user>/actions/delete"
+        
