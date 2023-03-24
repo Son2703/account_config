@@ -30,5 +30,4 @@ app.register_blueprint(root_url, url_prefix=v1_0_prefix)
 
 from src.apis.v1_0.user_service import user_service
 
-app.register_blueprint(user_url, url_prefix=f'{v1_0_prefix}/users')
 app.register_blueprint(user_service, url_prefix=v1_0_prefix)

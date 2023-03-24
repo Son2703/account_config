@@ -10,8 +10,6 @@ Mongo_Client = pymongo.MongoClient(
     host="config-account-mongo", port=27017, username= MONGO_USERNAME, password=MONGO_PASSWORD)
 
 CONFIG_ACCOUNT_DB = Mongo_Client[MONGO_DB]
-CONFIG_ACCOUNT_DB = Mongo_Client[MONGO_DB]
-USER_COL_NAME = CONFIG_ACCOUNT_DB[USER_COL_NAME]
 
 import redis
 

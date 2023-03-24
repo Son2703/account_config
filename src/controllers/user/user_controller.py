@@ -37,19 +37,16 @@ class UserControllers():
                 return validate.validate_add_user(body_data)
 
             if MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id}):
-                # return bad_request(BaseMoError("already_exist", "EEE", "OOO"))
-
-                return response.bad_request("{} is already taken".format(CommonKey.USERNAME))
-
+                return bad_request(BaseMoError("already_exist", '', body_data[CommonKey.USERNAME]))
             data_final = {
                 CommonKey.USERNAME: body_data[CommonKey.USERNAME],
                 CommonKey.PASSWORD: generate_password_hash(body_data[CommonKey.PASSWORD]),
-                CommonKey.ID_MERCHANT: merchant_id,
+                CommonKey.ID_MERCHANT: ObjectId(merchant_id),
                 CommonKey.STATUS: Status.ACTIVATE.value,
                 CommonKey.LAST_LOGIN: None,
                 CommonKey.LOGIN_FAIL_NUMBER: 0
             }
-            if MGUser().create(data_final, user_id):
+            if MGUser().create(data_final, ObjectId(user_id)):
                 return build_response_message()
             else:
                 return bad_request()
@@ -64,11 +61,12 @@ class UserControllers():
             if bool(validate.validate_change_pass(body_data)):
                 return validate.validate_change_pass(body_data)
 
-            user = MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id})
+            user = MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: ObjectId(merchant_id)})
             if not user:
-                return response.not_found()
+                return not_found(BaseMoError("not_exist", '', body_data[CommonKey.USERNAME]))
 
             if not check_password_hash(user[CommonKey.PASSWORD], body_data[CommonKey.PASSWORD]) or user[CommonKey.USERNAME] != body_data[CommonKey.USERNAME]:
+                return bad_request()
                 return response.bad_request("{} hoặc {} không chính xác".format(CommonKey.USERNAME, CommonKey.PASSWORD))
 
             if body_data[CommonKey.NEW_PASSWORD] != body_data[CommonKey.PASSWORD_CONFIRM]:
@@ -77,9 +75,9 @@ class UserControllers():
             data_final = {CommonKey.PASSWORD: generate_password_hash(
                 body_data[CommonKey.NEW_PASSWORD])}
 
-            if MGUser().update_one(query={CommonKey.ID: ObjectId(user_id)},
+            if MGUser().update_one(query={CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: ObjectId(merchant_id)},
                                    payload=data_final,
-                                   updater=user_id):
+                                   updater=ObjectId(user_id)):
 
                 return build_response_message()
             else:
@@ -91,7 +89,7 @@ class UserControllers():
     def get_user(self, id_user):
         try:
             merchant_id, _ = get_data_by_decode()
-            user = MGUser().filter_one(payload={CommonKey.ID: ObjectId(id_user), CommonKey.ID_MERCHANT: merchant_id},
+            user = MGUser().filter_one(payload={CommonKey.ID: ObjectId(id_user), CommonKey.ID_MERCHANT: ObjectId(merchant_id)},
                                        projection={CommonKey.ID: 0, CommonKey.PASSWORD: 0})
             if user:
                 return build_response_message(json.loads(json_util.dumps(user)))
@@ -114,9 +112,9 @@ class UserControllers():
 
             data_final = {CommonKey.STATUS: Status.DEACTIVE.value}
 
-            if MGUser().update_one(query={CommonKey.ID: ObjectId(body_data[CommonKey.ID_USER]), CommonKey.ID_MERCHANT: merchant_id},
+            if MGUser().update_one(query={CommonKey.ID: ObjectId(body_data[CommonKey.ID_USER]), CommonKey.ID_MERCHANT: ObjectId(merchant_id)},
                                    payload = data_final,
-                                   updater = user_id):
+                                   updater = ObjectId(user_id)):
 
                 return build_response_message()
             else:
@@ -128,8 +126,8 @@ class UserControllers():
     def delete_user(self, user_id):
         try:
             merchant_id, _ = get_data_by_decode()
-            if MGUser().filter_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: merchant_id}):
-                if MGUser().detele_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: merchant_id}):
+            if MGUser().filter_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: ObjectId(merchant_id)}):
+                if MGUser().detele_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: ObjectId(merchant_id)}):
                     return build_response_message()
                 else:
                     return bad_request()
