@@ -3,6 +3,10 @@
     "message": "Bad request.",
     "code": 400
   },
+  "bad_request_page_perpage": {
+    "message": "Page, perpage must be integer.",
+    "code": 400
+  },
   "unauthorized": {
     "message": "JWT is invalid or is expired. Please login again.",
     "code": 401
@@ -42,5 +46,9 @@
   "message_success": {
     "message": "request successful.",
     "code": 200
+  },
+  "invalid_id": {
+    "message": "ID not invalid.",
+    "code": 400
   }
 }

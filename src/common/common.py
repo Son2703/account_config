@@ -18,6 +18,7 @@ class CommonKey:
     #Rule
     ID_RULE = "id_rule"
     NAME= "name"
+    RULE = "rule"
 
     #result
     CODE = "code"
