@@ -36,11 +36,9 @@ class UserControllers():
             body_data = request.get_json()
             error_val_name = RuleAuth.validate_name(body_data[CommonKey.USERNAME], merchant_id)
             if bool(error_val_name):
-                print("asdasdas", flush=True)
                 return error_val_name
             error_val_pass = RuleAuth.validate_pass(body_data[CommonKey.PASSWORD], merchant_id)
             if bool(error_val_pass):
-                print("sdsssss", flush=True)
                 return error_val_pass
             if bool(validate.validate_add_user(body_data)):
                 return validate.validate_add_user(body_data)
