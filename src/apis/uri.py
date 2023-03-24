@@ -13,6 +13,5 @@ class URI:
         USER_LOCK = "/user/actions/lock-user"
         USER_BULK_INSERT_MANY = "/users/actions/bulk_insert"
         USER_DELETE ="/user/<user_id>/actions/delete"
-        USER_BULK_INSERT_MANY_EXCEL = "/users/actions/import_excel"
-
-    
+        USER_INSERT_MANY_EXCEL = "/users/actions/import_excel"
+        
