@@ -29,14 +29,14 @@ def login():
 
         current_user = MGUser().filter_one({
             CommonKey.USERNAME: data[CommonKey.USERNAME],
-            CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
+            # CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
         })
 
         if current_user[CommonKey.STATUS] != Status.ACTIVATE.value:
-            return unauthor(Message.USER_NOT_ACTIVATE)
+            return unauthor(BaseMoError(Message.USER_NOT_ACTIVATE))
 
         if not bool(current_user):
-            return not_found(Message.NOT_EXIST, CommonKey.USERNAME, data[CommonKey.USERNAME])
+            return not_found(BaseMoError(Message.NOT_EXIST), CommonKey.USERNAME, data[CommonKey.USERNAME])
 
         # check account lock
         result_lock_time = check_lock_time(current_user)
@@ -51,10 +51,6 @@ def login():
         if not match_password:
             lock_account(current_user)
             return {"code": 403, "message": "Login fail!"}, 403
-        # current_user = {
-        #     CommonKey.ID_MERCHANT: "merchant_1",
-        #     CommonKey.ID: ObjectId(),
-        # }
 
         config_mess = get_verify_user_configs(user_json)
         if config_mess:
@@ -62,7 +58,7 @@ def login():
             return {"code": 401, "error": config_mess}, 401
 
         data_jwt = json.loads(json_util.dumps({CommonKey.ID_USER: str(
-            current_user[CommonKey.ID]), CommonKey.ID_MERCHANT: current_user[CommonKey.ID_MERCHANT]}))
+            current_user[CommonKey.ID]), CommonKey.ID_MERCHANT: str(current_user[CommonKey.ID_MERCHANT])}))
 
         token = create_access_token(
             data=data_jwt, expires_delta=timedelta(days=1))
@@ -72,4 +68,4 @@ def login():
 
     update_last_login(current_user)
 
-    return {"code": 200, "data": {"token": token}}
+    return build_response_message({CommonKey.AUTHORIZATION: token})

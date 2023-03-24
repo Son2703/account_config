@@ -8,4 +8,8 @@ class Message:
     DATA_EXIST = "data_exist"
     NOT_CREATE_CONFIG = "not_create_config"
     NOT_FOUND_MERCHANT = "not_found_merchant"
+    MIN_LEN_ERROR = "min_len_error"
+    MAX_LEN_ERROR = "max_len_error"
+    MIN_CHARACTER_ERROR = "min_character_error"
+    FIELD_CHARACTER_ERROR = "field_character_error" 
     #rule 

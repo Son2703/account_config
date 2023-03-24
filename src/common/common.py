@@ -32,6 +32,7 @@ class CommonKey:
     #result
     CODE = "code"
     DATA = "data"
+    AUTHORIZATION = "authorization"
 
     #mongo
     SET = "$set"
@@ -39,8 +40,14 @@ class CommonKey:
     #user
     ID_USER = "id_user"
     USERNAME = "username"
-    PASSWORD = 'password'
+    PASSWORD = "password"
     STATUS = "status"
+    LAST_LOGIN = "last_login"
+    LOGIN_FAIL_NUMBER = "login_fail_number"
+    
+    #validator
+    NEW_PASSWORD = "new_password"
+    PASSWORD_CONFIRM = "password_confirm"
 
 
 

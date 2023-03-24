@@ -9,6 +9,8 @@ from src.models.mongo.rule_db import MGRule
 from src.common.time import timestamp_utc
 from src.auth.auth import get_data_by_decode
 from src.apis import *
+from bson import ObjectId, json_util
+import json
 
 
 class MerchantRuleControllers():
@@ -21,7 +23,7 @@ class MerchantRuleControllers():
 
             data = MerchantConfigSchenma().load(request.json)
             current_config = MGMerchantRuleAssignment().find(
-                payload={CommonKey.ID_MERCHANT: id_merchant})
+                payload={CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             if current_config != []:
                 return conflict(BaseMoError(Message.DATA_EXIST))
             all_rules = MGRule().find({CommonKey.STATUS: True})
@@ -30,7 +32,7 @@ class MerchantRuleControllers():
             for item in data:
                 if item not in all_name_rules:
                     return not_found(BaseMoError(Message.NOT_EXIST, item, item))
-                merchant_config = {CommonKey.ID_MERCHANT: id_merchant}
+                merchant_config = {CommonKey.ID_MERCHANT: ObjectId(id_merchant)}
                 if item == Rule.VAL_NAME.value:
                     values = ValNameSchema().load(data[Rule.VAL_NAME.value])
                     merchant_config.update({CommonKey.ID_RULE: MerchantRuleControllers.filter_id_rule(all_rules, Rule.VAL_NAME.value)})
@@ -59,19 +61,19 @@ class MerchantRuleControllers():
                     merchant_config.update({CommonKey.ID_RULE: MerchantRuleControllers.filter_id_rule(all_rules, Rule.LOCK_ACCOUNT.value)})
                 merchant_config.update(values)
                 payload.append(merchant_config)
-            data_update = MGMerchantRuleAssignment().create_many_config(payload, id_user)
-            data.update({CommonKey.ID_MERCHANT: id_merchant})
+            data_update = MGMerchantRuleAssignment().create_many_config(payload, ObjectId(id_user))
+            data.update({CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             data.update(data_update)
         except Exception as e:
             print(e, flush=True)
-        return build_response_message({CommonKey.DATA: data})
+        return build_response_message({CommonKey.DATA: json.loads(json_util.dumps(data))})
 
 
     @staticmethod
     def get():
         try:
             id_merchant, _ = get_data_by_decode()
-            data = MGMerchantRuleAssignment().find({CommonKey.ID_MERCHANT: id_merchant})
+            data = MGMerchantRuleAssignment().find({CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             if data == []:
                 return not_found(BaseMoError(Message.NOT_FOUND_MERCHANT))
 
@@ -80,7 +82,7 @@ class MerchantRuleControllers():
         except Exception as e:
             print(e, flush=True)
 
-        return build_response_message({CommonKey.DATA: result})
+        return build_response_message({CommonKey.DATA: json.loads(json_util.dumps(result))})
 
 
     @staticmethod
@@ -90,7 +92,7 @@ class MerchantRuleControllers():
             data = MerchantConfigSchenma().load(request.json)
             time_update = timestamp_utc()
             current_config = MGMerchantRuleAssignment().find(
-                {CommonKey.ID_MERCHANT: id_merchant})
+                {CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             if current_config == []:
                 return not_found(BaseMoError(BaseMoError(Message.NOT_FOUND_MERCHANT)))
             keys = list(data.keys())
@@ -111,17 +113,17 @@ class MerchantRuleControllers():
                     data[Rule.LOCK_ACCOUNT.value]) if Rule.LOCK_ACCOUNT.value in keys else {}
 
                 MGMerchantRuleAssignment().update_custom({CommonKey.ID_MERCHANT: item[CommonKey.ID_MERCHANT],
-                                        CommonKey.ID_RULE: item[CommonKey.ID_RULE]}, value_update, id_user, time_update)
-            data.update({CommonKey.ID_MERCHANT: id_merchant})
+                                        CommonKey.ID_RULE: item[CommonKey.ID_RULE]}, value_update, ObjectId(id_user), time_update)
+            data.update({CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             data.update({
                 CommonKey.CREATE_BY: current_config[0][CommonKey.CREATE_BY],
-                CommonKey.UPDATE_BY: id_user,
+                CommonKey.UPDATE_BY: ObjectId(id_user),
                 CommonKey.CREATE_AT: time_update,
                 CommonKey.UPDATE_AT: current_config[0][CommonKey.CREATE_AT]
             })
         except Exception as e:
             print(e, flush=True)
-        return build_response_message({CommonKey.DATA: data})
+        return build_response_message({CommonKey.DATA: json.loads(json.dumps(data))})
 
 
     @staticmethod
@@ -130,12 +132,12 @@ class MerchantRuleControllers():
             id_merchant, _ = get_data_by_decode()
 
             current_config = MGMerchantRuleAssignment().find(
-                {CommonKey.ID_MERCHANT: id_merchant})
+                {CommonKey.ID_MERCHANT: ObjectId(id_merchant)})
             if current_config == []:
                 return not_found(BaseMoError(Message.NOT_FOUND_MERCHANT))
         except Exception as e:
             print(e, flush=True)
-        return build_response_message({CommonKey.ID_MERCHANT: id_merchant})
+        return build_response_message({CommonKey.DATA: json.loads(json_util.dumps({CommonKey.ID_MERCHANT: id_merchant}))})
 
     @staticmethod
     def convert_value(data):
@@ -152,7 +154,7 @@ class MerchantRuleControllers():
     def convert_merchant_config(data, id_merchant):
         result = {}
         result.update({  # Nguoi create, update. time create va time update cua config cac rule trong mot merchant la nhu nhau
-            CommonKey.ID_MERCHANT: id_merchant,
+            CommonKey.ID_MERCHANT: ObjectId(id_merchant),
             CommonKey.CREATE_AT: next(iter(data))[CommonKey.CREATE_AT],
             CommonKey.CREATE_BY: next(iter(data))[CommonKey.CREATE_BY],
             CommonKey.UPDATE_AT: next(iter(data))[CommonKey.UPDATE_AT],
@@ -183,7 +185,7 @@ class MerchantRuleControllers():
     def filter_id_rule(data, rule_name):
         for x in data:
             if x[CommonKey.NAME] == rule_name:
-                return str(x[CommonKey.ID])
+                return x[CommonKey.ID]
     
     @staticmethod 
     def find_names_rule(data):

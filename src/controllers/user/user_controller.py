@@ -1,13 +1,23 @@
-from flask import jsonify, request
-from src.models.mongo.user_model import UserModel
-from bson.objectid import ObjectId
+import json
+from src.apis import *
+from bson import json_util
 from flask import Blueprint
-from werkzeug.security import generate_password_hash
-from src.common.validator import ValidateUser
 from src.apis import response
+from bson.objectid import ObjectId
+from flask import jsonify, request
+from bson.json_util import loads, dumps
+from src.common.common import CommonKey
+from src.common.constants import Status
+from src.models.mongo.user_db import MGUser
+from werkzeug.security import generate_password_hash, check_password_hash
+from src.controllers.user.validator import ValidateUser as validate
+from src.auth.auth import get_data_by_decode
+from src.auth.rules import RuleAuth
+
 # from producer import MessageProducer
 # from consumer import MessageConsumer
 import pandas as pd
+from kafka import KafkaProducer
 
 broker = 'localhost:9092'
 topic = 'test-topic'
@@ -20,182 +30,141 @@ class UserControllers():
     def __init__(self):
         pass
 
-    def register(self):
+    def create(self):
         try:
-
+            merchant_id, user_id = get_data_by_decode()
             body_data = request.get_json()
-            if ValidateUser.validate_add_user(body_data) != False:
-                return ValidateUser.validate_add_user(body_data)
-            
+            error_val_name = RuleAuth.validate_name(body_data[CommonKey.USERNAME], merchant_id)
+            if bool(error_val_name):
+                print("asdasdas", flush=True)
+                return error_val_name
+            error_val_pass = RuleAuth.validate_pass(body_data[CommonKey.PASSWORD], merchant_id)
+            if bool(error_val_pass):
+                print("sdsssss", flush=True)
+                return error_val_pass
+            if bool(validate.validate_add_user(body_data)):
+                return validate.validate_add_user(body_data)
+
+            if MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id}):
+
+                return response.bad_request("{} is already taken".format(CommonKey.USERNAME))
+
             data_final = {
-                "username": body_data["username"],
-                "password": generate_password_hash(body_data["password"]),
-                "id_merchant": 1,
-                "status" :1,
-                "login_fail_number": 0
+                CommonKey.USERNAME: body_data[CommonKey.USERNAME],
+                CommonKey.PASSWORD: generate_password_hash(body_data[CommonKey.PASSWORD]),
+                CommonKey.ID_MERCHANT: merchant_id,
+                CommonKey.STATUS: Status.ACTIVATE.value,
+                CommonKey.LAST_LOGIN: None,
+                CommonKey.LOGIN_FAIL_NUMBER: 0
             }
-            # Fake cretor
-            cretor = ObjectId()
-            print(data_final, flush=True)
-            if UserModel().create(data_final, cretor):
-                return jsonify({"code": 200, "message": "User has been registered"}), 200
+            if MGUser().create(data_final, user_id):
+                return build_response_message()
             else:
-                return jsonify({"code": 400, "message": "Fail to register user"}), 400
-            
+                return bad_request()
+
         except Exception as e:
-            print(e)
-   
-    def change_pass(self, user_id):
+            print(e, flush=True)
+
+    def change_pass(self):
         try:
+            merchant_id, user_id = get_data_by_decode()
             body_data = request.get_json()
-            if ValidateUser.validate_change_pass(body_data, user_id) != False:
-                return ValidateUser.validate_change_pass(body_data, user_id)
+            if bool(validate.validate_change_pass(body_data)):
+                return validate.validate_change_pass(body_data)
 
-            data_final = {"password": generate_password_hash(body_data["new_password"])}
+            user = MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id})
+            if not user:
+                return response.not_found()
 
-            if UserModel().update_one(query = {"_id": ObjectId(user_id)}, 
-                                      payload = data_final, 
-                                      updater = ObjectId(user_id)):
-                
-                return jsonify({"code": 200, "message": "Change password successfully"}), 200
+            if not check_password_hash(user[CommonKey.PASSWORD], body_data[CommonKey.PASSWORD]) or user[CommonKey.USERNAME] != body_data[CommonKey.USERNAME]:
+                return response.bad_request("{} hoặc {} không chính xác".format(CommonKey.USERNAME, CommonKey.PASSWORD))
+
+            if body_data[CommonKey.NEW_PASSWORD] != body_data[CommonKey.PASSWORD_CONFIRM]:
+                return response.bad_request("Xác nhận {} không chính xác".format(CommonKey.PASSWORD))
+
+            data_final = {CommonKey.PASSWORD: generate_password_hash(
+                body_data[CommonKey.NEW_PASSWORD])}
+
+            if MGUser().update_one(query={CommonKey.ID: ObjectId(user_id)},
+                                   payload=data_final,
+                                   updater=user_id):
+
+                return build_response_message()
             else:
-                return jsonify({"code": 400, "message": "Fail to change password"}), 400
-         
-        except Exception as e:
-            print(e)
+                return bad_request()
 
-    def get_user(self, user_id):
+        except Exception as e:
+            print(e, flush=True)
+
+    def get_user(self, id_user):
         try:
-            user = UserModel().filter_one({"_id": ObjectId(user_id)})
-            if user:                
-                return jsonify({
-                    'code': 200,
-                    'message': 'Success',
-                    'results': {
-                        "username" : user["username"],
-                        "password" : user["password"],
-                        "id_merchant":user["id_merchant"],
-                        "status": user["status"]
-                    }
-                })
+            merchant_id, _ = get_data_by_decode()
+            user = MGUser().filter_one(payload={CommonKey.ID: ObjectId(id_user), CommonKey.ID_MERCHANT: merchant_id},
+                                       projection={CommonKey.ID: 0, CommonKey.PASSWORD: 0})
+            if user:
+                return build_response_message(json.loads(json_util.dumps(user)))
             else:
-                return jsonify({"code": 409, "message": "user not exist"}) 
+                return bad_request()
         except Exception as e:
-            print(e)
+            print(e, flush=True)
 
     def lock_user(self):
         try:
-            body_data = request.get_json()
-            if ValidateUser.validate_lock_user(body_data) != False:
-                return ValidateUser.validate_lock_user(body_data)
-            data_final = {"status": 2}
+            merchant_id, user_id = get_data_by_decode()
 
-            if UserModel().update_one(query = {"_id": ObjectId(body_data["user_id"])}, 
-                                      payload = data_final, 
-                                      updater="1231244"):
-                
-                return jsonify({"code": 200, "message": "Lock User Successfully"}), 200
+            body_data = request.get_json()
+            if validate.validate_lock_user(body_data) != False:
+                return validate.validate_lock_user(body_data)
+
+            if MGUser().filter_one({CommonKey.ID: body_data[CommonKey.ID_USER]}):
+                return response.not_found()
+
+            data_final = {CommonKey.STATUS: Status.DEACTIVE.value}
+
+            if MGUser().update_one(query={CommonKey.ID: ObjectId(body_data[CommonKey.ID_USER]), CommonKey.ID_MERCHANT: merchant_id},
+                                   payload = data_final,
+                                   updater = user_id):
+
+                return build_response_message()
             else:
-                return jsonify({"code": 400, "message": "Fail to Lock User"}), 400
+                return bad_request()
 
         except Exception as e:
-            print(e)
-    
+            print(e, flush=True)
+
     def delete_user(self, user_id):
         try:
-            if UserModel().filter_one({"_id": ObjectId(user_id)}):
-                if UserModel().detele_one({"_id": ObjectId(user_id)}):
-                    return jsonify({"code": 200, "message": "User was Delete successfully"}), 200
+            merchant_id, _ = get_data_by_decode()
+            if MGUser().filter_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: merchant_id}):
+                if MGUser().detele_one({CommonKey.ID: ObjectId(user_id), CommonKey.ID_MERCHANT: merchant_id}):
+                    return build_response_message()
                 else:
-                    return jsonify({"code": 400, "message": "Fail to Delete User"}), 400
+                    return bad_request()
             else:
-                return jsonify({"code": 409, "message": "user not exist"}) 
+                return not_found
         except Exception as e:
-            print(e)
+            print(e, flush=True)
 
     def bulk_insert(self):
         try:
             body_data = request.get_json()
-            # if ValidateUser.validate_change_pass(body_data) != False:
-            #     return ValidateUser.validate_change_pass(body_data)
 
             return jsonify({"code": 200, "message": body_data}), 200
         except Exception as e:
             print(e)
 
+
     def excel_insert(self):
         fileExcel = request.files['file']
- 
-        df = pd.read_excel(fileExcel, engine='openpyxl')
-
-    
+        
+        if fileExcel.filename.endswith('.csv'):
+            df = pd.read_csv(fileExcel)         
+        elif fileExcel.filename.endswith('.xlsx'):
+            df = pd.read_excel(fileExcel, engine='openpyxl')
+        else:
+            return response.bad_request("File không đúng định dạng")
+        
         data = df.to_dict(orient='records')
 
 
         return response.success(data)
-
-
-# class UserController:
-#     def __init__(self):
-#         self.user_manager = MGUser()
-        
-#     @app.route("/users", methods=["POST"])
-#     def register(self):
-#         data = {
-#             'username': request.json["username"],
-#             'password': request.json["password"]
-#         }
-#         # Kiểm tra xem tên người dùng đã tồn tại hay chưa
-#         if self.user_manager.get_by_username(data["username"]):
-#             return jsonify({"success": False, "message": "Username is already taken"})
-        
-#         # Tạo user mới và lưu vào database
-#         rs = self.user_manager.create(payload=data)
-#         if rs:
-#             return jsonify({"success": True, "message": "User has been registered"}), 200
-#         else:
-#             return jsonify({"success": False, "message": "Fail to register user"}), 400
-        
-
-
-    # @app.route("/users", methods=["POST"])
-    # def register(self):
-        
-    #     users = {
-    #         'username': [Required, InstanceOf(str)],
-    #         # 'password': [Required, InstanceOf(str), Length(4, 9), Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)")],
-    #         'password': [Required, InstanceOf(str), Length(4, 9)]
-    #     }
-
-    #     data = {
-    #         'username': request.json["username"],
-    #         'password': request.json["password"]
-    #     }
-
-    #     valid = HttpValidator(users)
-    #     val_result = valid.validate_object(data)
-    #     if not val_result[VALIDATION_RESULT.VALID]:
-    #         return jsonify({"code": 400, "message": val_result[VALIDATION_RESULT.ERRORS]}), 400 
-        
-    #     if self.user_manager.get_by_username(data["username"]):
-    #         return jsonify({"success": False, "message": "Username is already taken"})
-        
-    #     return jsonify({"code": 200, "message": "User has been registered"}), 200
-
-        # else:
-            
-        #     rs = MGUser().create(payload=data)
-        #     if rs:
-        #         return jsonify({"code": 200, "message": "User has been registered"}), 200
-        #     else:
-        #         return jsonify({"code": 400, "message": "fail"}), 200
-
-
-
-
-
-
-    #     send_message = {"username": data['username'], 'email': data['email'], 'password': data['password'], 'type': request.method, 'route' : 'register', "function": 'create'}
-    #     message_producer = MessageProducer(broker, topic)
-    #     if message_producer.send_msg(send_message):
-    #         return jsonify({"success": True, "message": "User has been registered"}), 200

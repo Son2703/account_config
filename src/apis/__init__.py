@@ -69,6 +69,10 @@ def not_found(exception=None):
         exception = InputNotFoundError(LangError.NOT_FOUND)
     return jsonify(exception.get_message()), 404
 
+def unprocessable_content(exception=None):
+    if exception is None:
+        exception = ParamInvalidError(LangError.VALIDATE_ERROR)
+    return jsonify(exception.get_message()), 422
 
 # @app.errorhandler(405)
 def not_allowed(exception=None):

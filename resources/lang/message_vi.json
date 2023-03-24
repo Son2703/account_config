@@ -62,5 +62,21 @@
   "not_found_merchant": {
     "message": "Khong tim thay merchant",
     "code": 404
+  },
+  "min_len_error": {
+    "message": "khong du do dai toi thieu: %s",
+    "code": 422
+  },
+  "max_len_error": {
+    "message": "vuot qua do dai toi da: %s",
+    "code": 422
+  },
+  "min_character_error": {
+    "message": "can co %s ki tu %s trong %s",
+    "code": 422
+  },
+  "field_character_error": {
+    "message": "%s khong hop le do cac ki tu trong field khong phu hop voi config",
+    "code": 422
   }
 }
