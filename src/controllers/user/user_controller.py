@@ -35,8 +35,7 @@ class UserControllers():
             body_data = request.get_json()
             if bool(validate.validate_add_user(body_data)):
                 return validate.validate_add_user(body_data)
-
-            if MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: merchant_id}):
+            if MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: ObjectId(merchant_id)}):
                 return bad_request(BaseMoError("already_exist", '', body_data[CommonKey.USERNAME]))
             data_final = {
                 CommonKey.USERNAME: body_data[CommonKey.USERNAME],
@@ -60,17 +59,15 @@ class UserControllers():
             body_data = request.get_json()
             if bool(validate.validate_change_pass(body_data)):
                 return validate.validate_change_pass(body_data)
-
             user = MGUser().filter_one({CommonKey.USERNAME: body_data[CommonKey.USERNAME], CommonKey.ID_MERCHANT: ObjectId(merchant_id)})
             if not user:
                 return not_found(BaseMoError("not_exist", '', body_data[CommonKey.USERNAME]))
 
-            if not check_password_hash(user[CommonKey.PASSWORD], body_data[CommonKey.PASSWORD]) or user[CommonKey.USERNAME] != body_data[CommonKey.USERNAME]:
-                return bad_request()
-                return response.bad_request("{} hoặc {} không chính xác".format(CommonKey.USERNAME, CommonKey.PASSWORD))
+            if not check_password_hash(user[CommonKey.PASSWORD], body_data[CommonKey.PASSWORD]):
+                return bad_request(BaseMoError("message_incorrect",'', CommonKey.PASSWORD))
 
             if body_data[CommonKey.NEW_PASSWORD] != body_data[CommonKey.PASSWORD_CONFIRM]:
-                return response.bad_request("Xác nhận {} không chính xác".format(CommonKey.PASSWORD))
+                return bad_request(BaseMoError("validate_error"))
 
             data_final = {CommonKey.PASSWORD: generate_password_hash(
                 body_data[CommonKey.NEW_PASSWORD])}
@@ -92,7 +89,7 @@ class UserControllers():
             user = MGUser().filter_one(payload={CommonKey.ID: ObjectId(id_user), CommonKey.ID_MERCHANT: ObjectId(merchant_id)},
                                        projection={CommonKey.ID: 0, CommonKey.PASSWORD: 0})
             if user:
-                return build_response_message(json.loads(json_util.dumps(user)))
+                return response_message(json.loads(json_util.dumps(user)))
             else:
                 return bad_request()
         except Exception as e:
@@ -106,7 +103,6 @@ class UserControllers():
             if validate.validate_lock_user(body_data) != False:
                 return validate.validate_lock_user(body_data)
 
-            print(body_data["id_user"], flush= True)
             if MGUser().filter_one({CommonKey.ID: body_data[CommonKey.ID_USER]}):
                 return response.not_found()
 
@@ -139,12 +135,11 @@ class UserControllers():
     def bulk_insert(self):
         try:
             body_data = request.get_json()
-            # if ValidateUser.validate_change_pass(body_data) != False:
-            #     return ValidateUser.validate_change_pass(body_data)
+
 
             return jsonify({"code": 200, "message": body_data}), 200
         except Exception as e:
-            print(e)
+            print(e, flush=True)
 
 
     def excel_insert(self):

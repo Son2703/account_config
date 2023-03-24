@@ -49,6 +49,9 @@
   },
   "invalid_id": {
     "message": "ID không hợp lệ.",
+  "message_incorrect": {
+    "message" :"%s %s không chính xác.",
     "code": 400
   }
+  
 }
