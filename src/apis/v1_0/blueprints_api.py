@@ -5,7 +5,7 @@
 """
 
 from src.apis import app
-from src.controllers.merchant_config import merchant_cf 
+
 
 from src.controllers.merchant import merchant_url
 from src.controllers.root import root_url
@@ -15,8 +15,21 @@ from src.apis.v1_0.user_service import user_service
 v1_0_prefix = '/api/v1.0'
 
 
+
+from src.apis.v1_0.rule_service import rule_service
+app.register_blueprint(rule_service, url_prefix=v1_0_prefix)
+
+
+from src.controllers.merchant_config import merchant_cf 
 app.register_blueprint(merchant_cf, url_prefix=v1_0_prefix)
+
+
 app.register_blueprint(merchant_url, url_prefix=f'{v1_0_prefix}/merchants')
 app.register_blueprint(root_url, url_prefix=v1_0_prefix)
+
+
+from src.apis.v1_0.user_service import user_service
+app.register_blueprint(user_service, url_prefix=v1_0_prefix)
+
 app.register_blueprint(user_url, url_prefix=f'{v1_0_prefix}/users')
 app.register_blueprint(user_service, url_prefix=v1_0_prefix)

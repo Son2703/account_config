@@ -15,6 +15,7 @@ from src.auth.auth import get_data_by_decode
 
 # from producer import MessageProducer
 # from consumer import MessageConsumer
+import pandas as pd
 
 broker = 'localhost:9092'
 topic = 'test-topic'
@@ -147,61 +148,13 @@ class UserControllers():
         except Exception as e:
             print(e)
 
+    def excel_insert(self):
+        fileExcel = request.files['file']
+ 
+        df = pd.read_excel(fileExcel, engine='openpyxl')
 
-# class UserController:
-#     def __init__(self):
-#         self.user_manager = MGUser()
+    
+        data = df.to_dict(orient='records')
 
-#     @app.route("/users", methods=["POST"])
-#     def register(self):
-#         data = {
-#             'username': request.json["username"],
-#             'password': request.json["password"]
-#         }
-#         # Kiểm tra xem tên người dùng đã tồn tại hay chưa
-#         if self.user_manager.get_by_username(data["username"]):
-#             return jsonify({"success": False, "message": "Username is already taken"})
 
-#         # Tạo user mới và lưu vào database
-#         rs = self.user_manager.create(payload=data)
-#         if rs:
-#             return jsonify({"success": True, "message": "User has been registered"}), 200
-#         else:
-#             return jsonify({"success": False, "message": "Fail to register user"}), 400
-
-    # @app.route("/users", methods=["POST"])
-    # def register(self):
-
-    #     users = {
-    #         'username': [Required, InstanceOf(str)],
-    #         # 'password': [Required, InstanceOf(str), Length(4, 9), Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)")],
-    #         'password': [Required, InstanceOf(str), Length(4, 9)]
-    #     }
-
-    #     data = {
-    #         'username': request.json["username"],
-    #         'password': request.json["password"]
-    #     }
-
-    #     valid = HttpValidator(users)
-    #     val_result = valid.validate_object(data)
-    #     if not val_result[VALIDATION_RESULT.VALID]:
-    #         return jsonify({"code": 400, "message": val_result[VALIDATION_RESULT.ERRORS]}), 400
-
-    #     if self.user_manager.get_by_username(data["username"]):
-    #         return jsonify({"success": False, "message": "Username is already taken"})
-
-    #     return jsonify({"code": 200, "message": "User has been registered"}), 200
-
-        # else:
-
-        #     rs = MGUser().create(payload=data)
-        #     if rs:
-        #         return jsonify({"code": 200, "message": "User has been registered"}), 200
-        #     else:
-        #         return jsonify({"code": 400, "message": "fail"}), 200
-
-    #     send_message = {"username": data['username'], 'email': data['email'], 'password': data['password'], 'type': request.method, 'route' : 'register', "function": 'create'}
-    #     message_producer = MessageProducer(broker, topic)
-    #     if message_producer.send_msg(send_message):
-    #         return jsonify({"success": True, "message": "User has been registered"}), 200
+        return response.success(data)

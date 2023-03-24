@@ -12,6 +12,9 @@ class Rule(Enum):
     UNIQUE_PASS = "unique_pass" # mật khẩu không trùng
     LOCK_ACCOUNT = "lock_account"
 
+    
+
+LIST_RULE_NAME = [rule.value for rule in list(Rule)]
 class Role(Enum):
     ADMIN = "admin"
     USER = "user"

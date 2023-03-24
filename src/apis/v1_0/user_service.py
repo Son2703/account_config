@@ -36,3 +36,7 @@ def delete_user(id_user):
 @token_required
 def bulk_insert():
     return UserControllers().bulk_insert()
+
+@user_service.route(URI.USER.USER_BULK_INSERT_MANY_EXCEL, methods=[HTTP.METHOD.GET])
+def excel_insert():
+    return UserControllers().excel_insert()
