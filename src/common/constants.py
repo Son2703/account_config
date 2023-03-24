@@ -15,3 +15,8 @@ class Rule(Enum):
 class Role(Enum):
     ADMIN = "admin"
     USER = "user"
+
+class Status(Enum):
+    ACTIVATE = 1
+    DEACTIVE = 2
+

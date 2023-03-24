@@ -42,31 +42,33 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
+        print(request.headers, flush=True)
         # jwt is passed in the request header
         if 'Authorization' in request.headers:
             token = request.headers['Authorization']
         # return 401 if token is not passed
         if not token:
             return jsonify({'message' : 'Token is missing !!'}), 401
-  
+        print(token, flush=True)
             # decoding the payload to fetch the stored details
         data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-        current_user = MGUser().filter_one({"id_user": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
+        print(data, flush=True)
+        current_user = MGUser().filter_one({"_id": ObjectId(data["id_user"]), "id_merchant": data["id_merchant"]})
         if not bool(current_user):
             return jsonify({"message": "Invalid token!"}), 401
         # returns the current logged in users context to the routes
         return  f(*args, **kwargs)
 
             # decoding the payload to fetch the stored details
-        data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
-        current_user = MGUser().filter_one({"id_user": ObjectId(
-            data["id_user"]), "id_merchant": data["id_merchant"]})
-        if not bool(current_user):
-            return jsonify({"message": "Invalid token!"}), 401
-        # returns the current logged in users context to the routes
-        return f(data["id_merchant"], *args, **kwargs)
+        # data = jwt.decode(token, SECRET_KEY, algorithms=Authen.ALGORITHM)
+        # current_user = MGUser().filter_one({"id_user": ObjectId(
+        #     data["id_user"]), "id_merchant": data["id_merchant"]})
+        # if not bool(current_user):
+        #     return jsonify({"message": "Invalid token!"}), 401
+        # # returns the current logged in users context to the routes
+        # return f(data["id_merchant"], *args, **kwargs)
 
-        return f(current_user, *args, **kwargs)
+        # return f(current_user, *args, **kwargs)
     return decorated
 
 

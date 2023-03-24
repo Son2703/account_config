@@ -26,9 +26,11 @@ def login():
 
         current_user = MGUser().filter_one({
             CommonKey.USERNAME: data[CommonKey.USERNAME],
-            CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
+            # CommonKey.ID_MERCHANT: ObjectId(data[CommonKey.ID_MERCHANT]),
+            CommonKey.ID_MERCHANT: data[CommonKey.ID_MERCHANT],
             CommonKey.STATUS: 1
         })
+        print(current_user, flush=True)
         if current_user is None:
             return {"code": 404, "message": "User not found!"}, 404
 
