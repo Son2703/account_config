@@ -7,9 +7,9 @@ load_dotenv()
 HOST=os.getenv("HOST")
 ADMIN_HOST=os.getenv("ADMIN_HOST")
 
-#redis
+#rediszxxzc
 REDIS_NAME = os.getenv("REDIS_NAME")
-REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_PORT = os.getenv("REDIS_PczczcORT")
 REDIS_PORT = os.getenv("REDIS_PORT")
 
 #mongo
