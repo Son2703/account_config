@@ -157,19 +157,19 @@ class UserController:
         
 
 
-    # @app.route("/users", methods=["POST"])
-    # def register(self):
+    @app.route("/users", methods=["POST"])
+    def register(self):
         
-    #     users = {
-    #         'username': [Required, InstanceOf(str)],
-    #         # 'password': [Required, InstanceOf(str), Length(4, 9), Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)")],
-    #         'password': [Required, InstanceOf(str), Length(4, 9)]
-    #     }
+        users = {
+            'username': [Required, InstanceOf(str)],
+            # 'password': [Required, InstanceOf(str), Length(4, 9), Pattern(r"(^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$)")],
+            'password': [Required, InstanceOf(str), Length(4, 9)]
+        }
 
-    #     data = {
-    #         'username': request.json["username"],
-    #         'password': request.json["password"]
-    #     }
+        data = {
+            'username': request.json["username"],
+            'password': request.json["password"]
+        }
 
     #     valid = HttpValidator(users)
     #     val_result = valid.validate_object(data)
