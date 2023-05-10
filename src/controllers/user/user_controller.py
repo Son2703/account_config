@@ -134,26 +134,26 @@ class UserControllers():
         return response.success(data)
 
 
-# class UserController:
-#     def __init__(self):
-#         self.user_manager = MGUser()
+class UserController:
+    def __init__(self):
+        self.user_manager = MGUser()
         
-#     @app.route("/users", methods=["POST"])
-#     def register(self):
-#         data = {
-#             'username': request.json["username"],
-#             'password': request.json["password"]
-#         }
-#         # Kiểm tra xem tên người dùng đã tồn tại hay chưa
-#         if self.user_manager.get_by_username(data["username"]):
-#             return jsonify({"success": False, "message": "Username is already taken"})
+    @app.route("/users", methods=["POST"])
+    def register(self):
+        data = {
+            'username': request.json["username"],
+            'password': request.json["password"]
+        }
+        # Kiểm tra xem tên người dùng đã tồn tại hay chưa
+        if self.user_manager.get_by_username(data["username"]):
+            return jsonify({"success": False, "message": "Username is already taken"})
         
-#         # Tạo user mới và lưu vào database
-#         rs = self.user_manager.create(payload=data)
-#         if rs:
-#             return jsonify({"success": True, "message": "User has been registered"}), 200
-#         else:
-#             return jsonify({"success": False, "message": "Fail to register user"}), 400
+        # Tạo user mới và lưu vào database
+        rs = self.user_manager.create(payload=data)
+        if rs:
+            return jsonify({"success": True, "message": "User has been registered"}), 200
+        else:
+            return jsonify({"success": False, "message": "Fail to register user"}), 400
         
 
 
