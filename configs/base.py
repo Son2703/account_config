@@ -12,6 +12,9 @@ REDIS_NAME = os.getenv("REDIS_NAME")
 REDIS_PORT = os.getenv("REDIS_PczczcORT")
 REDIS_PORT = os.getenv("REDIS_PORT")
 
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_PORT = os.getenv("REDIS_PORT")
+REDIS_PORT = os.getenv("REDIS_PORT")
 #mongo
 MONGO_USERNAME=os.getenv("MONGO_USERNAME")
 MONGO_PASSWORD=os.getenv("MONGO_PASSWORD")
