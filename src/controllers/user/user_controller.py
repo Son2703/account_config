@@ -44,6 +44,34 @@ class UserControllers():
         except Exception as e:
             print(e)
    
+class UserControllers():
+    def __init__(self):
+        pass
+
+    def register(self):
+        try:
+
+            body_data = request.get_json()
+            if ValidateUser.validate_add_user(body_data) != False:
+                return ValidateUser.validate_add_user(body_data)
+            
+            data_final = {
+                "username": body_data["username"],
+                "password": generate_password_hash(body_data["password"]),
+                "id_merchant": 1,
+                "status" :1,
+                "login_fail_number": 0
+            }
+            # Fake cretor
+            cretor = ObjectId()
+            if UserModel().create(data_final, cretor):
+                return jsonify({"code": 200, "message": "User has been registered"}), 200
+            else:
+                return jsonify({"code": 400, "message": "Fail to register user"}), 400
+            
+        except Exception as e:
+            print(e)
+
     def change_pass(self, user_id):
         try:
             body_data = request.get_json()
