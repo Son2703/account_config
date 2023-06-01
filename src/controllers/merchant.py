@@ -12,6 +12,8 @@ from src.models.schemas.merchant_schemas import MerchantSchema
 merchant_table = MGMerchant()
 
 merchant_url = Blueprint('merchant', __name__)
+print("ssssssssss")
+print("ssssssssssss")
 
 
 @merchant_url.route('', methods=[HTTP.METHOD.POST])
